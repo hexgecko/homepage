@@ -126,15 +126,15 @@ ul.menu li.current_page_item a:active {
 
 @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
   #navbar {  
-    height: 55px;
+    height: 65px;
   }
   #navbar  ul li a{
-    font-size: 24pt;
+    font-size: 26pt;
     padding-top: 8px;
   }
-  #content p { font-size: 14pt; }
-  #content h1 { font-size: 20pt; }
-  #content h2 { font-size: 18pt; }
-  #content h3 { font-size: 16pt; }
-  #content h6 { font-size: 10pt; }
+  #content p { font-size: 18pt; }
+  #content h1 { font-size: 24pt; }
+  #content h2 { font-size: 22pt; }
+  #content h3 { font-size: 30pt; }
+  #content h6 { font-size: 14pt; }
 }
