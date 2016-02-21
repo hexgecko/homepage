@@ -20,6 +20,10 @@ local function buildPage(output, navbar, content)
   template:append(
     template:findAttribute('id', 'content'),
     HtmlParser.new(markdown.parser( readFile('markdown/' .. content))) );
+  
+  template:append(
+    template:findAttribute('id', 'archive'),
+    HtmlParser.new(markdown.parser( readFile('markdown/archive.md'))) );
 
   -- write the file to an html page
   template:write('output/' .. output);
