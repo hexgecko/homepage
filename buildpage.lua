@@ -32,7 +32,23 @@ end
 -------------------------------------------------------------------------------
 -- Builing the pages
 -------------------------------------------------------------------------------
-buildPage('index.html', 'home-navbar.md',  'home-content.md');
-buildPage('blog.html',  'blog-navbar.md',  'blog-content.md');
-buildPage('contact.html', 'contact-navbar.md', 'contact-content.md');
+-- home
+buildPage('index.html',
+          'home-navbar.md',
+          'home-content.md');
+
+-- blog
+buildPage('blog.html',
+          'blog-navbar.md',
+          'blog-content.md');
+
+-- post: Hosting your Website on GitHub
+buildPage('using-github-as-host-for-your-website.html',
+          'blog-navbar.md',
+          'using-github-as-host-for-your-website.md');
+
+-- contact
+buildPage('contact.html',
+          'contact-navbar.md',
+          'contact-content.md');
 -------------------------------------------------------------------------------
