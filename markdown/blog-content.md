@@ -1,7 +1,7 @@
-#BLOG
+#Blog
 - - -
 ## *Using GitHub as Host for your Website*
-######Posted: March 1, 2016
+    Posted: March 1, 2016
 
 This post explains how to use GitHub to host your website.
 
@@ -9,7 +9,7 @@ This post explains how to use GitHub to host your website.
 
 - - -
 ## *Welcome to HexGecko*
-######Posted: February 20, 2016
+    Posted: February 20, 2016
 
 In the future you will be able to find news here.
 
