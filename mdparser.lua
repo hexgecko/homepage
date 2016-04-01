@@ -1,35 +1,55 @@
-local M = {}
-local MT = {__index = _G}
-setmetatable(M, MT)
-setfenv(1, M)
+--[[
+#License
 
--- Locks table t from changes, writes an error if someone attempts to change the table.
--- This is useful for detecting variables that have "accidently" been made global. Something
--- I tend to do all too much.
+Copyright (C) 2008 Niklas Frykholm.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+to whom the Software is furnished to do so, subject to the following conditions: 
+
+The above copyright notice and this permission notice shall be included in all copies
+or substantial portions of the Software. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+]]
+
+-- function forward declaration
+local lock, map, split, detab, find_first, splice, outdent, indent;
+local tokenize_html, init_hash, block_pattern, line_pattern, protect_range;
+local protect_matches, protect, is_protected, unprotect, is_ruler_of, classify;
+local headers, lists, blockquotes, codeblocks, blocks_to_html, block_transform;
+local print_lines, init_escape_table, add_escape, escape_special_chars;
+local encode_backslash_escapes, encode_code, code_spans, encode_alt, images;
+local anchors, auto_links, amps_and_angles, emphasis, line_breaks, span_transform;
+local cleanup, strip_link_definitions;
+
 function lock(t)
 	function lock_new_index(t, k, v)
 		error("module has been locked -- " .. k .. " must be declared local", 2)
 	end
-
 	local mt = {__newindex = lock_new_index}
 	if getmetatable(t) then mt.__index = getmetatable(t).__index end
 	setmetatable(t, mt)
 end
 
--- Returns the result of mapping the values in table t through the function f
-function map(t, f)
+function map(t,f)
 	local out = {}
 	for k,v in pairs(t) do out[k] = f(v,k) end
 	return out
 end
 
--- The identity function, useful as a placeholder.
 function identity(text) return text end
 
--- Functional style if statement. (NOTE: no short circuit evaluation)
 function iff(t, a, b) if t then return a else return b end end
 
--- Splits the text into an array of separate lines.
 function split(text, sep)
 	sep = sep or "\n"
 	local lines = {}
@@ -43,7 +63,6 @@ function split(text, sep)
 	return lines
 end
 
--- Converts tabs to spaces
 function detab(text)
 	local tab_width = 4
 	local function rep(match)
@@ -55,7 +74,6 @@ function detab(text)
 	return text
 end
 
--- Applies string.find for every pattern in the list and returns the first match
 function find_first(s, patterns, index)
 	local res = {}
 	for _,p in ipairs(patterns) do
@@ -65,9 +83,6 @@ function find_first(s, patterns, index)
 	return unpack(res)
 end
 
--- If a replacement array is specified, the range [start, stop] in the array is replaced
--- with the replacement array and the resulting array is returned. Without a replacement
--- array the section of the array between start and stop is returned.
 function splice(array, start, stop, replacement)
 	if replacement then
 		local n = stop - start + 1
@@ -88,7 +103,6 @@ function splice(array, start, stop, replacement)
 	end
 end
 
--- Outdents the text one step.
 function outdent(text)
 	text = "\n" .. text
 	text = text:gsub("\n  ? ? ?", "\n")
@@ -96,15 +110,11 @@ function outdent(text)
 	return text
 end
 
--- Indents the text one step.
 function indent(text)
 	text = text:gsub("\n", "\n    ")
 	return text
 end
 
--- Does a simple tokenization of html data. Returns the data as a list of tokens. 
--- Each token is a table with a type field (which is either "tag" or "text") and
--- a text field (which contains the original token data).
 function tokenize_html(html)
 	local tokens = {}
 	local pos = 1
@@ -125,7 +135,6 @@ function tokenize_html(html)
 			_,stop = html:find("%b<>", start)
 		end
 		if not stop then
-			-- error("Could not match html tag " .. html:sub(start,start+30)) 
 		 	table.insert(tokens, {type="text", text=html:sub(start, start)})
 			pos = start + 1
 		else
@@ -136,33 +145,13 @@ function tokenize_html(html)
 	return tokens
 end
 
-----------------------------------------------------------------------
--- Hash
-----------------------------------------------------------------------
-
--- This is used to "hash" data into alphanumeric strings that are unique
--- in the document. (Note that this is not cryptographic hash, the hash
--- function is not one-way.) The hash procedure is used to protect parts
--- of the document from further processing.
-
 local HASH = {
-	-- Has the hash been inited.
 	inited = false,
-	
-	-- The unique string prepended to all hash values. This is to ensure
-	-- that hash values do not accidently coincide with an actual existing
-	-- string in the document.
 	identifier = "",
-	
-	-- Counter that counts up for each new hash instance.
 	counter = 0,
-	
-	-- Hash table.
 	table = {}
 }
 
--- Inits hashing. Creates a hash_identifier that doesn't occur anywhere
--- in the text.
 function init_hash(text)
 	HASH.inited = true
 	HASH.identifier = ""
@@ -180,7 +169,6 @@ function init_hash(text)
 	HASH.identifier = id
 end
 
--- Returns the hashed value for s.
 function hash(s)
 	assert(HASH.inited)
 	if not HASH.table[s] then
@@ -191,44 +179,21 @@ function hash(s)
 	return HASH.table[s]
 end
 
-----------------------------------------------------------------------
--- Protection
-----------------------------------------------------------------------
-
--- The protection module is used to "protect" parts of a document
--- so that they are not modified by subsequent processing steps. 
--- Protected parts are saved in a table for later unprotection
-
--- Protection data
 local PD = {
-	-- Saved blocks that have been converted
 	blocks = {},
-
-	-- Block level tags that will be protected
 	tags = {"p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote",
 	"pre", "table", "dl", "ol", "ul", "script", "noscript", "form", "fieldset",
 	"iframe", "math", "ins", "del"}
 }
 
--- Pattern for matching a block tag that begins and ends in the leftmost
--- column and may contain indented subtags, i.e.
--- <div>
---    A nested block.
---    <div>
---        Nested data.
---     </div>
--- </div>
 function block_pattern(tag)
 	return "\n<" .. tag .. ".-\n</" .. tag .. ">[ \t]*\n"
 end
 
--- Pattern for matching a block tag that begins and ends with a newline
 function line_pattern(tag)
 	return "\n<" .. tag .. ".-</" .. tag .. ">[ \t]*\n"
 end
 
--- Protects the range of characters from start to stop in the text and
--- returns the protected string.
 function protect_range(text, start, stop)
 	local s = text:sub(start, stop)
 	local h = hash(s)
@@ -237,8 +202,6 @@ function protect_range(text, start, stop)
 	return text
 end
 
--- Protect every part of the text that matches any of the patterns. The first
--- matching pattern is protected first, etc.
 function protect_matches(text, patterns)
 	while true do
 		local start, stop = find_first(text, patterns)
@@ -248,24 +211,18 @@ function protect_matches(text, patterns)
 	return text
 end
 
--- Protects blocklevel tags in the specified text
 function protect(text)
-	-- First protect potentially nested block tags
 	text = protect_matches(text, map(PD.tags, block_pattern))
-	-- Then protect block tags at the line level.
 	text = protect_matches(text, map(PD.tags, line_pattern))
-	-- Protect <hr> and comment tags
 	text = protect_matches(text, {"\n<hr[^>]->[ \t]*\n"})
 	text = protect_matches(text, {"\n<!%-%-.-%-%->[ \t]*\n"})
 	return text
 end
 
--- Returns true if the string s is a hash resulting from protection
 function is_protected(s)
 	return PD.blocks[s]
 end
 
--- Unprotects the specified text by expanding all the nonces
 function unprotect(text)
 	for k,v in pairs(PD.blocks) do
 		v = v:gsub("%%", "%%%%")
@@ -274,25 +231,12 @@ function unprotect(text)
 	return text
 end
 
-
-----------------------------------------------------------------------
--- Block transform
-----------------------------------------------------------------------
-
--- The block transform functions transform the text on the block level.
--- They work with the text as an array of lines rather than as individual
--- characters.
-
--- Returns true if the line is a ruler of (char) characters.
--- The line must contain at least three char characters and contain only spaces and
--- char characters.
 function is_ruler_of(line, char)
 	if not line:match("^[ %" .. char .. "]*$") then return false end
 	if not line:match("%" .. char .. ".*%" .. char .. ".*%" .. char) then return false end
 	return true
 end
 
--- Identifies the block level formatting present in the line
 function classify(line)
 	local info = {line = line, text = line}
 	
@@ -357,8 +301,6 @@ function classify(line)
 	return info
 end
 
--- Find headers constisting of a normal line followed by a ruler and converts them to
--- header entries.
 function headers(array)
 	local i = 1
 	while i <= #array - 1 do
@@ -376,7 +318,6 @@ function headers(array)
 	return array
 end
 
--- Find list blocks and convert them to protected data blocks
 function lists(array, sublist)
 	local function process_list(arr)
 		local function any_blanks(arr)
@@ -438,11 +379,6 @@ function lists(array, sublist)
 		end
 	end
 	
-	-- Finds the range of lines composing the first list in the array. A list
-	-- starts with (^ list_item) or (blank list_item) and ends with
-	-- (blank* $) or (blank normal).
-	--
-	-- A sublist can start with just (list_item) does not need a blank...
 	local function find_list(array, sublist)
 		local function find_list_start(array, sublist)
 			if array[1].type == "list_item" then return 1 end
@@ -491,7 +427,6 @@ function lists(array, sublist)
 		array = splice(array, start, stop, {info})
 	end
 	
-	-- Convert any remaining list items to normal
 	for _,line in ipairs(array) do
 		if line.type == "list_item" then line.type = "normal" end
 	end
@@ -499,7 +434,6 @@ function lists(array, sublist)
 	return array
 end
 
--- Find and convert blockquote markers.
 function blockquotes(lines)
 	local function find_blockquote(lines)
 		local start
@@ -549,7 +483,6 @@ function blockquotes(lines)
 	return lines
 end
 
--- Find and convert codeblocks.
 function codeblocks(lines)
 	local function find_codeblock(lines)
 		local start
@@ -591,7 +524,6 @@ function codeblocks(lines)
 	return lines
 end
 
--- Convert lines to html code
 function blocks_to_html(lines, no_paragraphs)
 	local out = {}
 	local i = 1
@@ -625,7 +557,6 @@ function blocks_to_html(lines, no_paragraphs)
 	return out
 end
 
--- Perform all the block level transforms
 function block_transform(text, sublist)
 	local lines = split(text)
 	lines = map(lines, classify)
@@ -634,28 +565,18 @@ function block_transform(text, sublist)
 	lines = codeblocks(lines)
 	lines = blockquotes(lines)
 	lines = blocks_to_html(lines)
-	local text = table.concat(lines, "\n")
-	return text
+	local out = table.concat(lines, "\n")
+	return out
 end
 
--- Debug function for printing a line array to see the result
--- of partial transforms.
 function print_lines(lines)
 	for i, line in ipairs(lines) do
 		print(i, line.type, line.text or line.line)
 	end
 end
 
-----------------------------------------------------------------------
--- Span transform
-----------------------------------------------------------------------
-
--- Functions for transforming the text at the span level.
-
--- These characters may need to be escaped because they have a special
--- meaning in markdown.
-escape_chars = "'\\`*_{}[]()>#+-.!'"
-escape_table = {}
+local escape_chars = "'\\`*_{}[]()>#+-.!'"
+local escape_table = {}
 
 function init_escape_table()
 	escape_table = {}
@@ -665,7 +586,6 @@ function init_escape_table()
 	end
 end
 
--- Adds a new escape to the escape table.
 function add_escape(text)
 	if not escape_table[text] then
 		escape_table[text] = hash(text)
@@ -673,7 +593,6 @@ function add_escape(text)
 	return escape_table[text]
 end	
 
--- Escape characters that should not be disturbed by markdown.
 function escape_special_chars(text)
 	local tokens = tokenize_html(text)
 	
@@ -681,7 +600,6 @@ function escape_special_chars(text)
 	for _, token in ipairs(tokens) do
 		local t = token.text
 		if token.type == "tag" then
-			-- In tags, encode * and _ so they don't conflict with their use in markdown.
 			t = t:gsub("%*", escape_table["*"])
 			t = t:gsub("%_", escape_table["_"])
 		else
@@ -692,7 +610,6 @@ function escape_special_chars(text)
 	return out
 end
 
--- Encode backspace-escaped characters in the markdown source.
 function encode_backslash_escapes(t)
 	for i=1,escape_chars:len() do
 		local c = escape_chars:sub(i,i)
@@ -701,7 +618,6 @@ function encode_backslash_escapes(t)
 	return t
 end
 
--- Unescape characters that have been encoded.
 function unescape_special_chars(t)
 	local tin = t
 	for k,v in pairs(escape_table) do
@@ -712,9 +628,6 @@ function unescape_special_chars(t)
 	return t
 end
 
--- Encode/escape certain characters inside Markdown code runs.
--- The point is that in code, these characters are literals,
--- and lose their special Markdown meanings.
 function encode_code(s)
 	s = s:gsub("%&", "&amp;")
 	s = s:gsub("<", "&lt;")
@@ -725,7 +638,6 @@ function encode_code(s)
 	return s
 end
 
--- Handle backtick blocks.
 function code_spans(s)
 	s = s:gsub("\\\\", escape_table["\\"])
 	s = s:gsub("\\`", escape_table["`"])
@@ -735,7 +647,6 @@ function code_spans(s)
 		local start, stop = s:find("`+", pos)
 		if not start then return s end
 		local count = stop - start + 1
-		-- Find a matching numbert of backticks
 		local estart, estop = s:find(string.rep("`", count), stop+1)
 		local brstart = s:find("\n", stop+1)
 		if estart and (not brstart or estart < brstart) then
@@ -755,7 +666,6 @@ function code_spans(s)
 	return s
 end
 
--- Encode alt text... enodes &, and ".
 function encode_alt(s)
 	if not s then return s end
 	s = s:gsub('&', '&amp;')
@@ -764,7 +674,6 @@ function encode_alt(s)
 	return s
 end
 
--- Handle image references
 function images(text)
 	local function reference_link(alt, id)
 		alt = encode_alt(alt:match("%b[]"):sub(2,-2))
@@ -797,7 +706,6 @@ function images(text)
 	return text
 end
 
--- Handle anchor references
 function anchors(text)
 	local function reference_link(text, id)
 		text = text:match("%b[]"):sub(2,-2)
@@ -830,16 +738,11 @@ function anchors(text)
 	return text
 end
 
--- Handle auto links, i.e. <http://www.google.com/>.
 function auto_links(text)
 	local function link(s)
 		return add_escape("<a href=\"" .. s .. "\">") .. s .. "</a>"
 	end
-	-- Encode chars as a mix of dec and hex entitites to (perhaps) fool
-	-- spambots.
 	local function encode_email_address(s)
-		-- Use a deterministic encoding to make unit testing possible.
-		-- Code 45% hex, 45% dec, 10% plain.
 		local hex = {code = function(c) return "&#x" .. string.format("%x", c:byte()) .. ";" end, count = 1, rate = 0.45}
 		local dec = {code = function(c) return "&#" .. c:byte() .. ";" end, count = 0, rate = 0.45}
 		local plain = {code = function(c) return c end, count = 0, rate = 0.1}
@@ -855,7 +758,6 @@ function auto_links(text)
 			
 			local code = codes[1]
 			local c = s:sub(i,i)
-			-- Force encoding of "@" to make email address more invisible.
 			if c == "@" and code == plain then code = codes[2] end
 			out = out .. code.code(c)
 			code.count = code.count - 1
@@ -868,20 +770,15 @@ function auto_links(text)
 		local text = encode_email_address(s)
 		return add_escape("<a href=\"" .. address .. "\">") .. text .. "</a>"
 	end
-	-- links
 	text = text:gsub("<(https?:[^'\">%s]+)>", link)
 	text = text:gsub("<(ftp:[^'\">%s]+)>", link)
 	
-	-- mail
 	text = text:gsub("<mailto:([^'\">%s]+)>", mail)
 	text = text:gsub("<([-.%w]+%@[-.%w]+)>", mail)
 	return text
 end
 
--- Encode free standing amps (&) and angles (<)... note that this does not
--- encode free >.
 function amps_and_angles(s)
-	-- encode amps not part of &..; expression
 	local pos = 1
 	while true do
 		local amp = s:find("&", pos)
@@ -896,15 +793,12 @@ function amps_and_angles(s)
 		end
 	end
 	
-	-- encode naked <'s
 	s = s:gsub("<([^a-zA-Z/?$!])", "&lt;%1")
 	s = s:gsub("<$", "&lt;")
 	
-	-- what about >, nothing done in the original markdown source to handle them
 	return s
 end
 
--- Handles emphasis markers (* and _) in the text.
 function emphasis(text)
 	for _, s in ipairs {"%*%*", "%_%_"} do
 		text = text:gsub(s .. "([^%s][%*%_]?)" .. s, "<strong>%1</strong>")
@@ -919,12 +813,10 @@ function emphasis(text)
 	return text
 end
 
--- Handles line break markers in the text.
 function line_breaks(text)
 	return text:gsub("  +\n", " <br/>\n")
 end
 
--- Perform all span level transforms.
 function span_transform(text)
 	text = code_spans(text)
 	text = escape_special_chars(text)
@@ -937,21 +829,12 @@ function span_transform(text)
 	return text
 end
 
-----------------------------------------------------------------------
--- Markdown
-----------------------------------------------------------------------
-
--- Cleanup the text by normalizing some possible variations to make further
--- processing easier.
 function cleanup(text)
-	-- Standardize line endings
 	text = text:gsub("\r\n", "\n")  -- DOS to UNIX
 	text = text:gsub("\r", "\n")    -- Mac to UNIX
-	
-	-- Convert all tabs to spaces
+
 	text = detab(text)
 	
-	-- Strip lines with only spaces and tabs
 	while true do
 		local subs
 		text, subs = text:gsub("\n[ \t]+\n", "\n\n")
@@ -961,7 +844,6 @@ function cleanup(text)
 	return "\n" .. text .. "\n"
 end
 
--- Strips link definitions from the text and stores the data in a lookup table.
 function strip_link_definitions(text)
 	local linkdb = {}
 	
@@ -985,7 +867,7 @@ function strip_link_definitions(text)
 	return text, linkdb
 end
 
-link_database = {}
+local link_database = {}
 
 return {
   parser = function(text)
