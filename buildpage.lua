@@ -33,9 +33,21 @@ local function readFile(filename)
 end
 
 -- build the page with the given parameters
-local function buildPage(output, navbar, content)
+local function buildPage(title, description, output, navbar, content)
   -- parser the template file
   local template = HtmlParser.new( readFile('template/template.html') );
+  
+  -- append the title
+  template:appendText(
+    template:findTag('title'),
+    title);
+  
+  -- append description
+  if description then
+    template:appendText(
+      template:findTag('title')+2,
+      "<meta name=\"description\" content=\""..description.."\"/>");
+  end
 
   -- append the navbar and content to the template
   template:append(
@@ -58,22 +70,30 @@ end
 -- Builing the pages
 -------------------------------------------------------------------------------
 -- home
-buildPage('index.html',
+buildPage('HexGecko - Home', nil,
+          'index.html',
           'home-navbar.md',
           'home-content.md');
 
 -- blog
-buildPage('blog.html',
+buildPage('HexGecko - Blog', nil,
+          'blog.html',
           'blog-navbar.md',
           'blog-content.md');
 
 -- post: Hosting your Website on GitHub
-buildPage('using-github-as-host-for-your-website.html',
+
+
+buildPage('HexGecko - Using GitHub as Host for your Website',
+          "This post describes how I hosting this homepage on GitHub for free, link a "..
+          "domain to the page and how to auto generate HTML from markdown using a Lua script.",
+          'using-github-as-host-for-your-website.html',
           'blog-navbar.md',
           'using-github-as-host-for-your-website.md');
 
 -- contact
-buildPage('contact.html',
+buildPage('HexGecko - Contact', nil,
+          'contact.html',
           'contact-navbar.md',
           'contact-content.md');
 -------------------------------------------------------------------------------

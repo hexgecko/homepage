@@ -181,13 +181,29 @@ end
 local htmlparser_mt = {};
 htmlparser_mt.__index = htmlparser_mt;
 
--- return the index to the first attribute
+-- return the index to the first attribute found, can be used for searching ids.
 function htmlparser_mt.findAttribute(self, key, value)
   local t = self._toklist;
   for i=1,#t do
     if t[i][1] == TOK_ATTR_KEY and t[i+1][1] == TOK_ATTR_VALUE and
        t[i][2] == key          and t[i+1][2] == value then
+      
       -- an attribute have been found, search for the next attr end or a tag close.
+      for j=i,#t do
+        if t[j][1] == TOK_ATTR_END or t[j][1] == TOK_TAG_CLOSE then
+          return j;
+        end
+      end
+    end
+  end
+end
+
+-- return the indx to the first tag with the given name
+function htmlparser_mt.findTag(self, name)
+  local t = self._toklist;
+  for i=1,#t do
+    if t[i][1] == TOK_TAG_BEGIN and t[i][2] == name then
+      -- a tag have been found, search for the next attr end or a tag close.
       for j=i,#t do
         if t[j][1] == TOK_ATTR_END or t[j][1] == TOK_TAG_CLOSE then
           return j;
@@ -203,6 +219,11 @@ function htmlparser_mt.append(self, index, src)
     index = index + 1;
     table.insert(self._toklist, index, v);
   end
+end
+
+-- append a text to this html
+function htmlparser_mt.appendText(self, index, text)
+  table.insert(self._toklist, index+1, {TOK_DATA, text});
 end
 
 -- write the html to a file
