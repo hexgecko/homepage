@@ -3,20 +3,17 @@ body {
   font-family: "Trebuchet MS";
   color: #3A3838;
   text-align: left;
-}
-
-#container {
   margin: 0px auto;
   width: 100%;
   max-width: 1000px
 }
 
-#header {
+#logo {
   background: #2CA05A;
   width: 100%;
   height: 99px;
 }
-#header img {
+#logo img {
   padding-left: 12px;
   padding-top: 2px;
 }
@@ -152,6 +149,11 @@ ul.menu li.current_page_item a:active {
   border-bottom: 2px solid #0B2817;
   background: #999999;
 }
+
+#content pre {
+  margin-top: 0.1em;
+}
+
 #footer {
     clear: both;
     text-align: center;
@@ -173,10 +175,10 @@ ul.menu li.current_page_item a:active {
 }
 
 @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
-  #header {
+  #logo {
     height: 73px;
   }
-  #header img {
+  #logo img {
     width: 316px;
     height: auto;
     padding-left: 2px;
