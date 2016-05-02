@@ -1,0 +1,15 @@
+<ion-view title="Report">
+  <ion-content padding="true" class="has-header">
+    <h4>Class: {{classRecord.name}} - {{classRecord.subject}}</h4>
+    <table>
+      <tr class="row">
+        <th class="col col-75">Name</th>
+        <th class="col">Grade</th>
+      </tr>
+      <tr class="row" ng-repeat="record in gradeList">
+        <td class="col col-75">{{record.firstName}}, {{record.lastName}}</td>
+        <td class="col">{{record.avgGrade-0.5|number:0}}</td>
+      </tr>
+    </table>
+  </ion-content>
+</ion-view>

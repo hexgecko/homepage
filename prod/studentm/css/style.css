@@ -1,0 +1,72 @@
+.platform-ios .manual-ios-statusbar-padding {
+  padding-top:20px;
+}
+.manual-remove-top-padding {
+  padding-top:0px; 
+}
+.manual-remove-top-padding .scroll {
+  padding-top:0px !important;
+}
+
+.button.button-balanced {
+  background-color: #4CAF50;
+  font-weight: bold;
+}
+
+.list {
+  margin-bottom: 0px;
+}
+
+.item-divider {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold
+}
+
+.item {
+  border-color: #4CAF50;
+  font-size: 14px !important;
+}
+
+.item-content {
+  padding-right: 20px !important;
+  padding-top: 0.9em !important;
+  padding-bottom: 0.9em !important;
+}
+
+.result-header {
+  padding-right: 20px;
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+}
+
+table {
+  width: 100%;
+  border: 1px solid #4CAF50;
+}
+
+hr {
+  height: 1px;
+  background: #4CAF50;
+  font-size: 14px;
+  border: 0;
+}
+
+tr {
+  padding: 0px !important;
+  margin-top: 0px !important;
+}
+
+th {
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  padding-left: 16px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}

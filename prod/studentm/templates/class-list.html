@@ -1,0 +1,52 @@
+<!-- class list page -->
+<ion-view title="Class List">
+  <ion-content class="padding has-header">
+    <div class="list">
+      <button class="button button-dark button-clear icon-left ion-minus-circled" ng-click="toggleShowDeleteButton(state)">Delete</button>
+      <button style="float: right" class="button button-dark button-clear icon-right ion-plus-circled" ng-click="showClassAddEditModal(state)">New</button>
+    </div>
+    <ion-list show-delete="state.showDeleteButton" can-swipe="true">
+      <ion-item class="item-divider">Classes:</ion-item>
+      <ion-item ng-repeat="class in classList track by $index" href="#/tab/class-info/{{class.$loki}}">
+        <ion-delete-button class="ion-icon ion-minus-circled" ng-click="deleteClassRecord(class, $index)"></ion-delete-button>
+        
+        <ion-option-button class="ion-icon ion-edit" ng-click="showClassAddEditModal(state, class)"></ion-option-button>
+        
+        <span><strong>{{class.name}}</strong> - {{class.subject}}</span>
+        <i style="float: right"class="icon ion-clipboard"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
+
+<!-- modal for adding and editing a class -->
+<script id="templates/class-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-light">
+      <!-- show the "new" lable if it's new record -->
+      <h1 ng-show="state.newClass" class="title">New Class</h1>
+      
+      <!-- show the "edit" lable if it's new record -->
+      <h1 ng-hide="state.newClass" class="title">Edit Class</h1>
+      
+      <button class="button button-clear button-primary" ng-click="classAddEditModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding has-header">
+      <form class="list">
+        <ion-item class="item-divider">Info:</ion-item>
+        <label class="item item-input">
+          <span class="input-label">Name:</span>
+          <input type="text" placeholder="Class Name" ng-model="state.className">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Subject:</span>
+          <input type="text" placeholder="Subject" ng-model="state.classSubject">
+        </label>
+        <div class="spacer" style="height: 1em;"></div>
+        
+        <button ng-show="state.newClass" class="button button-balanced button-block" ng-click="addClassRecord(state)">Add</button>
+        <button ng-hide="state.newClass" class="button button-balanced button-block" ng-click="updateClassRecord(state)">Update</button>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
