@@ -5,11 +5,7 @@ angular.module('app.gradeSystem', ['app.db'])
     var result = new Array(examList.length);
     for(var i=0; i<examList.length; i++) {
       // find the score for this examId - studentId
-      var r = db.examResultCollection.find({$and: [
-        {examId: examList[i].$loki},
-        {studentId: studentId}
-      ]});
-      var score = r[0].score;
+      var score = db.getExamResult(examList[i], studentId)[0].score;
 
       // calculate the grade
       var grade = 6;

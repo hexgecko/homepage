@@ -1,79 +1,23 @@
-
 <ion-view title="Student Info">
   <ion-content class="padding has-header">
-    <h4>Student: {{studentRecord.firstName}} {{studentRecord.lastName}}</h4>
-    <table>
-      <tr class="row"><th class="col">Name/Gender</th></tr>
-      <tr class="row">
-        <td class="col col-40">First Name:</td>
-        <td class="col">{{studentRecord.firstName}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Last Name:</td>
-        <td class="col">{{studentRecord.lastName}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Gender:</td>
-        <td class="col">{{studentRecord.gender}}</td>
-      </tr>
-
-      <tr class="row">
-        <th class="col">Connect</th>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Email:</td>
-        <td class="col">{{studentRecord.email}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Phone Home:</td>
-        <td class="col">{{studentRecord.homePhoneNumber}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Phone Mobile:</td>
-        <td class="col">{{studentRecord.mobilePhoneNumber}}</td>
-      </tr>
-      
-      <tr class="row">
-        <th class="col">Address</th>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Street:</td>
-        <td class="col">{{studentRecord.street}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">City:</td>
-        <td class="col">{{studentRecord.city}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Postal Code:</td>
-        <td class="col">{{studentRecord.postalCode}}</td>
-      </tr>
-      
-      <tr class="row">
-        <th class="col col-40" colspan="2">Classes:</th>
-        <th class="col"></th>
-      </tr>
-      <tr class="row" ng-repeat="class in classList track by $index">
-        <td class="col">{{class.name}} - {{class.subject}}</td>
-      </tr>
-    </table>
-    
-    <h4>Result:</h4>
-    <table ng-repeat="class in classList track by $index">
-      <tr>
-        <th class="col">{{class.name}} - {{class.subject}}</th>
-      </tr>
-      <tr class="row" ng-repeat="exam in class.examResult track by $index">
-        <td class="col col-50">{{exam.category}}: {{exam.name}}<td>
-        <td class="col">{{exam.weight}}%</td>
-        <td class="col">{{exam.grade}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-50"><strong>Grade:</strong></td>
-        <td class="col"><strong>{{class.sumWeight}}%</strong></td>
-        <td class="col"><strong>{{class.avgGrade-0.5 | number:0}}</strong> ({{class.avgGrade | number:1}})</td>
-      </tr>
-    </table>
+    <h4>Student: {{studentRecord.lastName}}, {{studentRecord.firstName}} ({{studentRecord.gender}})</h4>
+    <!--div class="list">
+      <div class="row item-divider">
+        <div class="col">Name/Gender:</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">First Name:</div>
+        <div class="col">{{studentRecord.firstName}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Last Name:</div>
+        <div class="col">{{studentRecord.lastName}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Gender:</div>
+        <div class="col">{{studentRecord.gender}}</div>
+      </div>
+    </div-->
     
     <hr>
     <div class="list"> 
@@ -81,30 +25,98 @@
       <button style="float: right" class="button button-dark button-clear icon-right ion-plus-circled" ng-click="showNoteAddEditModal(state)">New</button>
     </div>
     <ion-list show-delete="state.showNoteDeleteButton" can-swipe="true">
-      <ion-item class="item-divider">Notes:</ion-item>
+      <ion-item class="item-divider">
+        Notes:
+        <span ng-show="noteList.length == 0">(Empty)</span>
+      </ion-item>
       <ion-item ng-repeat="note in noteList track by $index">
         <ion-delete-button class="ion-icon ion-minus-circled" ng-click="deleteNoteRecord(note, $index)"></ion-delete-button>
         
         <ion-option-button class="ion-icon ion-edit" ng-click="showNoteAddEditModal(state, note)"></ion-option-button>
         
         <span><strong>{{note.category}}</strong></span>
-        <p><strong>{{noteDateList[$index].date}}</strong> - {{note.comment}}</p>
+        <p><strong>{{noteDateList[$index].date}}:</strong> {{note.comment}}</p>
       </ion-item>
     </ion-list>
+    <div class="spacer" style="height: 1em;"></div>
+    
+    <h4>Result:</h4>
+    <div class="list" ng-repeat="class in classList track by $index">
+      <div class="row item-divider">
+        <div class="col">{{class.name}} - {{class.subject}}</div>
+      </div>
+      <div class="row item" ng-repeat="exam in class.examResult track by $index">
+        <div class="col col-50">{{exam.category}}: {{exam.name}}</div>
+        <div class="col">{{exam.weight}}%</div>
+        <div class="col">{{exam.grade}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-50"><strong>Grade:</strong></div>
+        <div class="col"><strong>{{class.sumWeight}}%</strong></div>
+        <div class="col"><strong>{{class.avgGrade-0.5 | number:0}}</strong> ({{class.avgGrade | number:1}})</div>
+      </div>
+    </div>
+    
+    <h4>Information:</h4>
+    <div class="list">
+      <div class="row item-divider">
+        <div class="col">Contact:</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Email:</div>
+        <div class="col">{{studentRecord.email}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Phone Home:</div>
+        <div class="col">{{studentRecord.homePhoneNumber}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Phone Mobile:</div>
+        <div class="col">{{studentRecord.mobilePhoneNumber}}</div>
+      </div>
+    </div>
+      
+    <div class="list">
+      <div class="row item-divider">
+        <div class="col">Address:</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Street:</div>
+        <div class="col">{{studentRecord.street}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">City:</div>
+        <div class="col">{{studentRecord.city}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Postal Code:</div>
+        <div class="col">{{studentRecord.postalCode}}</div>
+      </div>
+    </div>
+      
+    <div class="list">
+      <div class="row item-divider">
+        <div class="col">Classes:</div>
+      </div>
+      <div class="row item" ng-repeat="class in classList track by $index">
+        <div class="col">{{class.name}} - {{class.subject}}</div>
+      </div>
+    </div>
+    <div class="spacer" style="height: 1em;"></div>
   </ion-content>
 </ion-view>
 
 <!-- modal for adding and editing a note -->
 <script id="templates/note-modal.html" type="text/ng-template">
   <ion-modal-view>
-    <ion-header-bar class="bar bar-header bar-light">
+    <ion-header-bar class="bar bar-header bar-positive">
       <h1 ng-show="state.newNote" class="title">New Note</h1>
       <h1 ng-hide="state.newNote" class="title">Edit Note</h1>
       <button class="button button-clear button-primary" ng-click="noteAddEditModal.hide()">Cancel</button>
     </ion-header-bar>
     <ion-content class="padding has-header">
       <form class="list">
-        <ion-item class="item-divider">Info:</ion-item>
+        <ion-item class="item-divider">Note Info:</ion-item>
         <label class="item item-select">
           <span class="input-label">Category:</span>
           <select ng-model="state.noteCategory">
@@ -123,8 +135,8 @@
           <span class="input-label">Comment:</span>
           <textarea style="width: 100%" placeholder="Write a comment here!" ng-model="state.noteComment"></textarea>
         </label>
-        <button ng-show="state.newNote" class="button button-balanced button-block" ng-click="addNoteRecord(state)">Add</button>
-        <button ng-hide="state.newNote" class="button button-balanced button-block" ng-click="updateNoteRecord(state)">Update</button>
+        <button ng-show="state.newNote" class="button button-positive button-block" ng-click="addNoteRecord(state)">Add</button>
+        <button ng-hide="state.newNote" class="button button-positive button-block" ng-click="updateNoteRecord(state)">Update</button>
       </form>
     </ion-content>
   </ion-modal-view>

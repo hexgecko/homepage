@@ -3,7 +3,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
 ///////////////////////////////////////////////////////////////////////////////
 // Classes
 ///////////////////////////////////////////////////////////////////////////////
-.controller('classListCtrl', function($scope, $ionicModal, db) {  
+.controller('classListCtrl', function($scope, $ionicModal, $ionicListDelegate, $ionicPlatform, db) {  
   // load the add/edit class module
   $ionicModal.fromTemplateUrl('templates/class-modal.html', {scope: $scope})
   .then(function(modal) {
@@ -11,10 +11,16 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   });
   
   // keep track of the page states
-  $scope.state = {};
+  $scope.state = {
+    canSwipe: true
+  };
   
-  // query the list from the database
-  $scope.classList = db.classCollection.find();
+  // get a list of the classes from the database
+  $ionicPlatform.ready(function() {
+    db.init().then(function() {
+      $scope.classList = db.getClassList();
+    });
+  });
 
   // show the add/update classes dialog
   $scope.showClassAddEditModal = function(state, record) {
@@ -29,17 +35,21 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
       state.classSubject = ""; 
       state.newClass = true;
     }
+    
     // show the modal dialog
+    $ionicListDelegate.showDelete(false);
+    $scope.state.showDeleteButton = false;
+    $ionicListDelegate.closeOptionButtons();
     $scope.classAddEditModal.show();
   };
   
   // update a record in the database
   $scope.updateClassRecord = function(state) {
     // update the database
-    var record = db.classCollection.get(state.classId);
+    var record = db.getClass(state.classId);
     record.name = state.className;
     record.subject = state.classSubject;
-    db.classCollection.update(record);
+    db.updateClass(record);
     
     // hide the dialog
     $scope.classAddEditModal.hide();
@@ -48,13 +58,13 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   // add the record to the list
   $scope.addClassRecord = function(state) {
     // insert the record to the database and update the local list
-    db.classCollection.insert({
+    db.addClass({
       name: state.className,
       subject: state.classSubject
     });
     
     // update the class list
-    $scope.classList = db.classCollection.find();
+    $scope.classList = db.getClassList();
     
     // hide the modal dialog
     $scope.classAddEditModal.hide();
@@ -62,8 +72,15 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   
   // delete a class from the list
   $scope.deleteClassRecord = function(record, index) {
-    db.deleteClass(record.$loki);
+    // remove it from the database and the local list
+    db.deleteClass(record);
     $scope.classList.splice(index, 1);
+    
+    // hide the delete button if the list ist empty
+    if($scope.classList.length == 0) {
+      $ionicListDelegate.showDelete(false);
+      $scope.state.showDeleteButton = false;
+    }
   };
   
   // toggle the delete buttons
@@ -76,7 +93,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   };
 })
     
-.controller('classInfoCtrl', function($scope, $ionicModal, $stateParams, db) {
+.controller('classInfoCtrl', function($scope, $ionicModal, $stateParams, $ionicListDelegate, $ionicPlatform, db) {
   // load the add/edit student module
   $ionicModal.fromTemplateUrl('templates/student-modal.html', {scope: $scope})
   .then(function(modal) {
@@ -101,28 +118,15 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     showExamDeleteButton: false
   };
   
-  // query the class record
-  $scope.classRecord = db.classCollection.get($scope.state.classId);
-  
-  // query the student link to this class
-  var queryStudentList = function(classId) {
-    var ids = db.studentClassLinkCollection.find({classId: classId});
-    var res = [];
-    for(var i=0; i<ids.length; i++) {
-      res.push(db.studentCollection.get(ids[i].studentId));
-    }
-    return res;
-  };
-  $scope.studentList = queryStudentList($scope.state.classId);
-  
-  // query the exam list for the class
-  var queryExamList = function(classId) {
-    return db.examCollection.chain()
-      .find({classId: $scope.state.classId})
-      .simplesort('timestamp', true)
-      .data();
-  };
-  $scope.examList = queryExamList($scope.state.classId);
+  $ionicPlatform.ready(function() {
+    db.init()
+    .then(function() {
+      // get class and student list
+      $scope.classRecord = db.getClass($scope.state.classId);
+      $scope.studentList = db.getStudentList($scope.state.classId);
+      $scope.examList = db.getExamList($scope.state.classId);
+    });
+  });
   
   // show the add/edut dialog
   $scope.showStudentAddEditModal = function(state, record) {
@@ -150,26 +154,38 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
       state.studentPostalCode = "";
       state.newStudent = true;
     }
+    
+    // show the add dialog
+    $ionicListDelegate.showDelete(false);
+    state.showStudentDeleteButton = false;
+    $ionicListDelegate.closeOptionButtons();
     $scope.studentAddEditModal.show();
   };
   
   // the user showes the pick dialog
   $scope.showStudentPickModal = function(state) {
     // get all of the student and show the dialog
-    state.studentPickList = db.studentCollection.find();
+    state.studentPickList = db.getStudentList();
     $scope.studentPickModal.show()
   };
   
   // the user have picked a student
   $scope.studentPicked = function(state, record) {    
     // link the student to the class
-    db.studentClassLinkCollection.insert({
-      classId: state.classId,
-      studentId: record.$loki
-    });
+    db.linkStudentToClass(record, state.classId);
+    
+    // create a result for every exam
+    for(var i=0; i<$scope.examList.length; i++) {
+      db.addExamResult({
+        examId: $scope.examList[i].$loki,
+        studentId: record.$loki,
+        score: 0,
+        active: true
+      });
+    }
     
     // update the student list
-    $scope.studentList = queryStudentList(state.classId);
+    $scope.studentList = db.getStudentList(state.classId);
 
     // hide the dialogs
     $scope.studentPickModal.hide()
@@ -179,7 +195,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   // add a new student record to the database
   $scope.addStudentRecord = function(state) {
     // insert the the record to the database
-    var record = db.studentCollection.insert({
+    var record = db.addStudent(state.classId, {
       firstName: state.studentFirstName,
       lastName: state.studentLastName,
       gender: state.studentGender,
@@ -190,16 +206,10 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
       city: state.studentCity,
       postalCode: state.studentPostalCode
     });
-
-    // link the student to the class
-    db.studentClassLinkCollection.insert({
-      classId: state.classId,
-      studentId: record.$loki
-    });
     
     // create a result for every exam
     for(var i=0; i<$scope.examList.length; i++) {
-      db.examResultCollection.insert({
+      db.addExamResult({
         examId: $scope.examList[i].$loki,
         studentId: record.$loki,
         score: 0,
@@ -208,7 +218,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     }
     
     // update the student list
-    $scope.studentList = queryStudentList(state.classId);
+    $scope.studentList = db.getStudentList(state.classId);
     
     // close the dialog
     $scope.studentAddEditModal.hide();
@@ -217,7 +227,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   // update an existing record in the database
   $scope.updateStudentRecord = function(state) {
     // update the student information
-    var record = db.studentCollection.get(state.studentId);
+    var record = db.getStudent(state.studentId);
     record.firstName = state.studentFirstName;
     record.lastName = state.studentLastName;
     record.gender = state.studentGender;
@@ -227,7 +237,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     record.street = state.studentStreet;
     record.city = state.studentCity;
     record.postalCode = state.studentPostalCode;
-    db.studentCollection.update(record);
+    db.updateClass(record);
     
     // close the dialog
     $scope.studentAddEditModal.hide();
@@ -237,10 +247,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   $scope.deleteStudentRecord = function(record, index) {
     // delete the exam result for all the exam in the exam list
     for(var i=0; i<$scope.examList.length; i++) {
-      db.examResultCollection.removeWhere({$and: [
-        {examId: $scope.examList[i].$loki},
-        {studentId: record.$loki}
-      ]});
+      db.deleteExamResult($scope.examList[i], record.$loki);
     }
     
     // delete the student and it's notes if it's only linked to this class
@@ -248,6 +255,12 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     
     // remove it from the local list
     $scope.studentList.splice(index, 1);
+    
+    // hide the delete button if the list ist empty
+    if($scope.studentList.length == 0) {
+      $ionicListDelegate.showDelete(false);
+      $scope.state.showStudentDeleteButton = false;
+    }
   };
   
   // show the exam add/edit dialog
@@ -280,13 +293,18 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
       state.examGrade6 = 0;
       state.newExam = true;
     }
+    
+    // show the add/edit dialog
+    $ionicListDelegate.showDelete(false);
+    $scope.state.showExamDeleteButton = false;
+    $ionicListDelegate.closeOptionButtons();
     $scope.examAddEditModal.show();
   };
   
   // add an exam to the database and list
   $scope.addExamRecord = function(state) {
     // create a new record
-    var record = db.examCollection.insert({
+    var record = db.addExam({
       classId: state.classId,
       name: state.examName,
       category: state.examCategory,
@@ -303,7 +321,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     
     // create a exam result for every student
     for(var i=0; i<$scope.studentList.length; i++) {
-      db.examResultCollection.insert({
+      db.addExamResult({
         examId: record.$loki,
         studentId: $scope.studentList[i].$loki,
         score: 0,
@@ -312,7 +330,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     }
     
     // update the exam list
-    $scope.examList = queryExamList(state.classId);
+    $scope.examList = db.getExamList(state.classId);
     
     // hide the dialog
     $scope.examAddEditModal.hide();
@@ -321,7 +339,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   // update an exam in the database and list
   $scope.updateExamRecord = function(state) {
     // update the record
-    var record = db.examCollection.get(state.examId);
+    var record = db.getExam(state.examId);
     record.name = state.examName;
     record.category = state.examCategory;
     record.timestamp = new Date(state.examDate).getTime();
@@ -333,10 +351,10 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     record.grade4 = state.examGrade4;
     record.grade5 = state.examGrade5;
     record.grade6 = state.examGrade6;
-    db.examCollection.update(record);
+    db.updateExam(record);
     
     // update the exam list
-    $scope.examList = queryExamList(state.classId);
+    $scope.examList = db.getExamList(state.classId);
     
     // hide the dialog
     $scope.examAddEditModal.hide();
@@ -346,17 +364,20 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   $scope.deleteExamRecord = function(record, index) {
     // delete the exam result for all the exam in the exam list
     for(var i=0; i<$scope.studentList.length; i++) {
-      db.examResultCollection.removeWhere({$and: [
-        {examId: record.$loki},
-        {studentId: $scope.studentList[i].$loki}
-      ]});
+      db.deleteExamResult(record, $scope.studentList[i].$loki);
     }
     
     // remove it from the database
-    db.examCollection.remove(record);
+    db.deleteExam(record);
     
     // remove it from the local list
     $scope.examList.splice(index, 1);
+    
+    // hide the delete button if the list ist empty
+    if($scope.examList.length == 0) {
+      $ionicListDelegate.showDelete(false);
+      $scope.state.showExamDeleteButton = false;
+    }
   };
   
   // toggle the student delete buttons
@@ -388,43 +409,48 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   };
 })
  
-.controller('classReportCtrl', function($scope, $stateParams, db, grade) {
+.controller('classReportCtrl', function($scope, $stateParams, $ionicPlatform, db, grade) {
   // state of the page
   $scope.state = {
     classId: Number($stateParams.classId)
   };
   
-  // get the class record
-  $scope.classRecord = db.classCollection.get($scope.state.classId);
-  
-  // query and calulate the grade list
-  $scope.gradeList = function(classId) {
-    // query the students in the class
-    var studentList = db.studentClassLinkCollection.find({classId: classId});
-    
-    // for every student, calculate the grade
-    var returnList = new Array(studentList.length);
-    studentList.forEach(function(record, index) {
-      // query/calculate the data
-      var student = db.studentCollection.get(record.studentId);
-      var examList = db.examCollection.find({classId: classId});
-      var gradeList = grade.calculateGradeList(examList, record.studentId);
-      var sumWeight = grade.calculateSumWeight(gradeList);
-      var avgGrade = grade.calculateAvgGrade(gradeList, sumWeight);
+  $ionicPlatform.ready(function() {
+    db.init()
+    .then(function() {
+      // get the class record
+      $scope.classRecord = db.getClass($scope.state.classId);
       
-      // fill the return list
-      returnList[index] = {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        avgGrade: avgGrade
-      };
+      // query and calulate the grade list
+      $scope.gradeList = function(classId) {
+        // query the students in the class
+        var studentList = db.getStudentToClassLink(classId);
+
+        // for every student, calculate the grade
+        var returnList = new Array(studentList.length);
+        studentList.forEach(function(record, index) {
+          // query/calculate the data
+          var student = db.getStudent(record.studentId);
+          var examList = db.getExamList(classId);
+          var gradeList = grade.calculateGradeList(examList, record.studentId);
+          var sumWeight = grade.calculateSumWeight(gradeList);
+          var avgGrade = grade.calculateAvgGrade(gradeList, sumWeight);
+
+          // fill the return list
+          returnList[index] = {
+            firstName: student.firstName,
+            lastName: student.lastName,
+            avgGrade: avgGrade
+          };
+        });
+
+        return returnList;
+      }($scope.state.classId);
     });
-    
-    return returnList;
-  }($scope.state.classId);
+  });
 })
  
-.controller('studentInfoCtrl', function($scope, $ionicModal, $stateParams, db, grade) {
+.controller('studentInfoCtrl', function($scope, $ionicModal, $stateParams, $ionicListDelegate, $ionicPlatform, db, grade) {
   // load the add/edit student module
   $ionicModal.fromTemplateUrl('templates/note-modal.html', {scope: $scope})
   .then(function(modal) {
@@ -436,42 +462,6 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     studentId: Number($stateParams.studentId)
   };
   
-  // query the student record
-  $scope.studentRecord = db.studentCollection.get($scope.state.studentId);
-  
-  // query the class the student belong to
-  $scope.classList = function(studentId) {
-    // get a list where the student belongs
-    var ids = db.studentClassLinkCollection.find({studentId: studentId});
-    
-    // get the record from the class collection
-    var list = new Array(ids.length);
-    for(var i=0; i<ids.length; i++) {
-      var record = db.classCollection.get(ids[i].classId);
-      var gradeList = grade.calculateGradeList(db.examCollection.find({classId: record.$loki}), studentId);
-      var sumWeight = grade.calculateSumWeight(gradeList);
-      list[i] = {
-        name: record.name,
-        subject: record.subject,
-        examResult: gradeList,
-        sumWeight: sumWeight,
-        avgGrade: grade.calculateAvgGrade(gradeList, sumWeight)
-      };
-    }
-    
-    // finnaly return the class list
-    return list;
-  }($scope.state.studentId);
-  
-  // query the note list for the student
-  var queryNoteList = function(studentId) {
-    return db.noteCollection.chain()
-      .find({studentId: studentId})
-      .simplesort('timestamp', true)
-      .data();
-  };
-  $scope.noteList = queryNoteList($scope.state.studentId);
-  
   // create a date list for the notes
   var updateNoteDateList = function(noteList) {
     var dateList = new Array(noteList.length)
@@ -482,7 +472,44 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     }
     return dateList;
   };
-  $scope.noteDateList = updateNoteDateList($scope.noteList);
+  
+  $ionicPlatform.ready(function() {
+    db.init()
+    .then(function() {
+      // query the student record
+      $scope.studentRecord = db.getStudent($scope.state.studentId);
+      
+      // get the student note
+      $scope.noteList = db.getStudentNoteList($scope.state.studentId);
+        
+      // the dates for a give note
+      $scope.noteDateList = updateNoteDateList($scope.noteList);
+
+      // query the class the student belong to
+      $scope.classList = function(studentId) {
+        // get a list where the student belongs
+        var ids = db.getClassToStudentLink(studentId);
+
+        // get the record from the class collection
+        var list = new Array(ids.length);
+        for(var i=0; i<ids.length; i++) {
+          var record = db.getClass(ids[i].classId);
+          var gradeList = grade.calculateGradeList(db.getExamList(record.$loki), studentId);
+          var sumWeight = grade.calculateSumWeight(gradeList);
+          list[i] = {
+            name: record.name,
+            subject: record.subject,
+            examResult: gradeList,
+            sumWeight: sumWeight,
+            avgGrade: grade.calculateAvgGrade(gradeList, sumWeight)
+          };
+        }
+            
+        // finaly return the class list
+        return list;
+      }($scope.state.studentId);
+    });
+  });
   
   // show the add/edit note dialog
   $scope.showNoteAddEditModal = function(state, record) {
@@ -498,13 +525,18 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
       state.noteDate = new Date(); // return today date
       $scope.state.newNote = true;
     }
+    
+    // show the add/edit dialog
+    $ionicListDelegate.showDelete(false);
+    state.showNoteDeleteButton = false;
+    $ionicListDelegate.closeOptionButtons();
     $scope.noteAddEditModal.show();
   };
   
   // add a new note to the local list and database
   $scope.addNoteRecord = function(state) {
     // add the list to the database
-    db.noteCollection.insert({
+    db.addStudentNote({
       studentId: state.studentId,
       category: state.noteCategory,
       timestamp: state.noteDate.getTime(),
@@ -512,7 +544,7 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
     });
     
     // update the lists
-    $scope.noteList = queryNoteList(state.studentId);
+    $scope.noteList = db.getStudentNoteList(state.studentId);
     $scope.noteDateList = updateNoteDateList($scope.noteList);
     
     // hide the dialog
@@ -522,14 +554,13 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   // update an existing note in the local list and database
   $scope.updateNoteRecord = function(state) {
     // update the record
-    var record = db.noteCollection.get(state.noteId);
+    var record = db.getStudentNote(state.noteId);
     record.category = state.noteCategory;
     record.timestamp = state.noteDate.getTime();
     record.comment = state.noteComment;
-    db.noteCollection.update(record);
+    db.updateStudentNote(record);
     
     // update the lists
-    $scope.noteList = queryNoteList(state.studentId);
     $scope.noteDateList = updateNoteDateList($scope.noteList);
     
     // hide the dialog
@@ -539,10 +570,16 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   // delete a note from the local list and the database
   $scope.deleteNoteRecord = function(record, index) {
     // remove it from the database
-    db.noteCollection.remove(record);
+    db.deleteStudentNote(record);
     
     // remove it from the local list
     $scope.noteList.splice(index, 1);
+    
+    // hide the delete button if the list ist empty
+    if($scope.noteList.length == 0) {
+      $ionicListDelegate.showDelete(false);
+      $scope.state.showNoteDeleteButton = false;
+    }
   };
   
   // toggle the delete button in the note list
@@ -555,42 +592,50 @@ angular.module('app.controllers', ['app.gradeSystem', 'app.db'])
   };
 })
 
-.controller('examInfoCtrl', function($scope, $stateParams, db) {  
-  // query the exam record
-  $scope.examRecord = db.examCollection.get(Number($stateParams.examId));
+.controller('examInfoCtrl', function($scope, $stateParams, $ionicPlatform, db) {
+  // called when the device is ready
+  $ionicPlatform.ready(function() {
+    db.init().then(function() {
+      // query the exam record
+      $scope.examRecord = db.getExam(Number($stateParams.examId));
+      
+      // query the students result
+      $scope.studentResultList = function(examId) {
+        // query the results
+        var examResult = db.getStudentExamResult(examId);
+        
+        // get the current exam date
+        $scope.state.examDate = new Date($scope.examRecord.timestamp).toLocaleDateString()
+        
+        // create a a result list
+        result = new Array(examResult.length);
+        for(var i=0; i<examResult.length; i++) {
+          var student = db.getStudent(examResult[i].studentId);
+          result[i] = {
+            examResultId: examResult[i].$loki,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            score: examResult[i].score,
+            active: examResult[i].active
+          };
+        }
+        return result;
+      }(Number($stateParams.examId));
+    });
+  });
   
   // keep the current state of the page
   $scope.state = {
     examId: Number($stateParams.examId),
-    examDate: new Date($scope.examRecord.timestamp).toLocaleDateString()
   };
-  
-  // query the students result
-  $scope.studentResultList = function(examId) {
-    // query the results
-    var examResult = db.examResultCollection.find({examId: examId});
-    
-    // create a a result list
-    result = new Array(examResult.length);
-    for(var i=0; i<examResult.length; i++) {
-      var student = db.studentCollection.get(examResult[i].studentId);
-      result[i] = {
-        examResultId: examResult[i].$loki,
-        firstName: student.firstName,
-        lastName: student.lastName,
-        score: examResult[i].score,
-        active: examResult[i].active
-      };
-    }
-    return result;
-  }($scope.state.examId);
   
   // called when an result is updates
   $scope.examResutlChanged = function(result) {
-    if(!Number.isNaN(result.score)) {
-      var record = db.examResultCollection.get(result.examResultId);
+    
+    if(!isNaN(result.score)) {
+      var record = db.getExamResultFromId(result.examResultId);
       record.score = result.score;
-      db.examResultCollection.update(record);
+      db.updateExamResult(record);
     }
   }
 })

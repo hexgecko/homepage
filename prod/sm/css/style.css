@@ -8,41 +8,62 @@
   padding-top:0px !important;
 }
 
+.tabs-balanced>.tabs, .tabs.tabs-balanced {
+  background-color: #555;
+}
+
+.tabs-striped.tabs-balanced .tabs {
+  background-color: #555;
+}
+
+.bar.bar-balanced {
+  background-color: #555;
+}
+
+.platform-android .bar .title {
+  left: 0px !important;
+  text-align: center;
+}
+
 .button.button-balanced {
   background-color: #4CAF50;
   font-weight: bold;
 }
 
 .list {
-  margin-bottom: 0px;
+  margin-bottom: 5px;
 }
 
 .item-divider {
+  border: 1px solid #4CAF50;
   background-color: #4CAF50;
   color: white;
-  font-weight: bold
+  font-weight: bold;
 }
 
 .item {
-  border-color: #4CAF50;
-  font-size: 14px !important;
-}
-
-.item-content {
-  padding-right: 20px !important;
-  padding-top: 0.9em !important;
-  padding-bottom: 0.9em !important;
-}
-
-.result-header {
-  padding-right: 20px;
-  padding-top: 0.8em;
-  padding-bottom: 0.8em;
-}
-
-table {
-  width: 100%;
   border: 1px solid #4CAF50;
+}
+
+.row.item-divider {
+  border: 1px solid #4CAF50;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 8px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin: 0px
+}
+
+.row.item {
+  border: none;
+  border-bottom: 1px solid #4CAF50;
+  border-right: 1px solid #4CAF50;
+  border-left: 1px solid #4CAF50;
+  padding-top: 5px;
+  margin: 0px
 }
 
 hr {
@@ -50,23 +71,4 @@ hr {
   background: #4CAF50;
   font-size: 14px;
   border: 0;
-}
-
-tr {
-  padding: 0px !important;
-  margin-top: 0px !important;
-}
-
-th {
-  text-align: left;
-  background-color: #4CAF50;
-  color: white;
-  font-weight: bold;
-  padding-left: 16px !important;
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2
 }

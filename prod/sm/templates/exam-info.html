@@ -1,66 +1,72 @@
 <ion-view title="Exam Info">
   <ion-content class="padding has-header">
-    <h4>Exam: {{examRecord.name}}</h4>
-    <table>
-      <tr class="row"><th class="col">About:</th></tr>
-      <tr class="row">
-        <td class="col col-40">Name:</td>
-        <td class="col">{{examRecord.name}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Category:</td>
-        <td class="col">{{examRecord.category}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Date:</td>
-        <td class="col">{{state.examDate}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Weight:</td>
-        <td class="col">{{examRecord.weight}}%</td>
-      </tr>
-      
-      <tr class="row"><th class="col">Score:</th></tr>
-      <tr class="row">
-        <td class="col col-40">Grade 1:</td>
-        <td class="col">{{examRecord.max}} &le; x &lt; {{examRecord.grade1}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Grade 2:</td>
-        <td class="col">{{examRecord.grade1}} &le; x &lt; {{examRecord.grade2}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Grade 3:</td>
-        <td class="col">{{examRecord.grade2}} &le; x &lt; {{examRecord.grade3}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Grade 4:</td>
-        <td class="col">{{examRecord.grade3}} &le; x &lt; {{examRecord.grade4}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Grade 5:</td>
-        <td class="col">{{examRecord.grade4}} &le; x &lt; {{examRecord.grade5}}</td>
-      </tr>
-      <tr class="row">
-        <td class="col col-40">Grade 6:</td>
-        <td class="col">{{examRecord.grade5}} &le; x &lt; {{examRecord.grade6}}</td>
-      </tr>
-    </table>
+    <h4>{{examRecord.category}}: {{examRecord.name}} ({{state.examDate}})</h4>
+    <!--div class="list">
+      <div class="row item-divider">
+        <div class="col">About:</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Name:</div>
+        <div class="col">{{examRecord.name}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Category:</div>
+        <div class="col">{{examRecord.category}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Date:</div>
+        <div class="col">{{state.examDate}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Weight:</div>
+        <div class="col">{{examRecord.weight}}%</div>
+      </div>
+    </div>
     
-    <hr>
+    <div class="list">
+      <div class="row item-divider">
+        <div class="col">Score:</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Grade 1:</div>
+        <div class="col">{{examRecord.max}} &le; x &lt; {{examRecord.grade1}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Grade 2:</div>
+        <div class="col">{{examRecord.grade1}} &le; x &lt; {{examRecord.grade2}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Grade 3:</div>
+        <div class="col">{{examRecord.grade2}} &le; x &lt; {{examRecord.grade3}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Grade 4:</div>
+        <div class="col">{{examRecord.grade3}} &le; x &lt; {{examRecord.grade4}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Grade 5:</div>
+        <div class="col">{{examRecord.grade4}} &le; x &lt; {{examRecord.grade5}}</div>
+      </div>
+      <div class="row item">
+        <div class="col col-40">Grade 6:</div>
+        <div class="col">{{examRecord.grade5}} &le; x &lt; {{examRecord.grade6}}</div>
+      </div>
+    </div-->
     
     <form class="list">
-      <div class="item item-divider row result-header">Students Result:</div>
-      <div class="item row" ng-repeat="result in studentResultList track by $index">
-        <div class="col col-80" style="margin-top: 5px">
-          <i class="ion-icon ion-edit"></i>
-          <span style="padding: 0.6em; vertical-align: middle"><strong>{{result.firstName}}</strong>, {{result.lastName}}</span>
+      <div class="row item-divider">
+        <div class="col">Students Result:</div>
+      </div>
+      <div class="row item" ng-repeat="result in studentResultList track by $index">
+        <div class="col col-80">
+          <span><strong>{{result.lastName}}</strong>, {{result.firstName}}</span>
         </div>
-        <div class="col" style="margin-top: 5px">
-          <input type="number" style="height: initial;" ng-model="result.score" ng-change="examResutlChanged(result)" ng>
+        <div class="col">
+          <i style="padding-right: 3px;" class="ion-icon ion-edit placeholder-icon"></i>
+          <input style="display: inline-block; padding-top: 0px; height: initial;" type="number" ng-model="result.score" placeholder="0" ng-change="examResutlChanged(result)" ng>
         </div>
-      </label>
       </div>
     </form>
+    <div class="spacer" style="height: 1em;"></div>
   </ion-content>
 </ion-view>
