@@ -1,36 +1,78 @@
-<!-- class list page -->
 <ion-view title="Class List">
-  <ion-content class="padding has-header">
+  <ion-nav-buttons side="right">
+    <button class="button button-clear" ng-if="state.showEditMode" ng-click="toggleShowEditMode(state)">Done</button>
+  </ion-nav-buttons>
+  <ion-content class="padding-top has-header">
+    <!-- the class list -->
     <div class="list">
-      <button class="button button-dark button-clear icon-left ion-minus-circled" ng-click="toggleShowDeleteButton(state)">Delete</button>
-      <button style="float: right" class="button button-dark button-clear icon-right ion-plus-circled" ng-click="showClassAddEditModal(state)">New</button>
+      <!-- header -->
+      <div class="edit-list-header">
+        <div>
+          <span>Classes: <span ng-if="classList.length == 0">Empty</span></span>
+        </div>
+        
+        <input ng-if="!state.showEditMode" type="button" value="Edit" ng-click="toggleShowEditMode(state)">
+        <input ng-if="!state.showEditMode" type="button" value="New" ng-click="showClassAddEditModal(state)">
+        <input style="font-weight: bold" ng-if="state.showEditMode" type="button" value="Done" ng-click="toggleShowEditMode(state)">
+      </div>
+      
+      <div
+        class="edit-list-slider"
+        ng-class="state.showEditMode === true ? 'hg-show' : ''">
+        
+        <div
+          class="edit-list-item"
+          ng-repeat="class in classList track by $index">
+          <div class="checkbox">
+            <input type="checkbox" ng-model="state.markedClasses[$index]">
+          </div>
+          
+          <div style: "border: none" class="item">
+            <span><strong>{{class.name}}</strong> - {{class.subject}}</span>
+          </div>
+          
+          <ion-button
+            style="background: white"
+            class="ion-icon ion-ios-copy"
+            ng-click="showClassCloneModal(state, class)">
+          </ion-button>
+          
+          <ion-button
+            style="background: white"
+            class="ion-icon ion-edit"
+            ng-click="showClassAddEditModal(state, class)">
+          </ion-button>
+        </div>
+      </div>
+      
+      <!-- item -->
+      <div class="edit-list-item" ng-repeat="class in classList track by $index">        
+        <a class="item" ng-href="#/tab/class-info/{{class.$loki}}">
+          <span><strong>{{class.name}}</strong> - {{class.subject}}</span>
+          <i class="ion-chevron-right"></i>
+        </a>
+      </div>
     </div>
-    <ion-list show-delete="state.showDeleteButton" can-swipe="state.canSwipe">
-      <ion-item class="item-divider">
-        Classes:
-        <span ng-show="classList.length == 0">(Empty)</span>
-      </ion-item>
-      <ion-item ng-repeat="class in classList track by $index" href="#/tab/class-info/{{class.$loki}}">
-        <ion-delete-button class="ion-icon ion-minus-circled" ng-click="deleteClassRecord(class, $index)"></ion-delete-button>
-        <ion-option-button class="ion-icon ion-edit" ng-click="showClassAddEditModal(state, class)"></ion-option-button>
-        <span><strong>{{class.name}}</strong> - {{class.subject}}</span>
-        <i style="float: right"class="icon ion-clipboard"></i>
-      </ion-item>
-    </ion-list>
     <div class="spacer" style="height: 1em;"></div>
   </ion-content>
+  
+  <!-- footer displaying the "Mark All" and "Delete" buttons -->
+  <ion-footer-bar ng-if="state.showEditMode" align-title="right" class="bar-light">
+    <button class="button button-stable" ng-click="unmarkAllClasses(state)">Unselect All</button>
+    <button class="button button-assertive" ng-click="deleteSelectedClasses(state)">Delete</button>
+  </ion-footer-bar>
 </ion-view>
 
 <!-- modal for adding and editing a class -->
 <script id="templates/class-modal.html" type="text/ng-template">
   <ion-modal-view>
     <ion-header-bar class="bar bar-header bar-positive">
-      <h1 ng-show="state.newClass" class="title">New Class</h1>
-      <h1 ng-hide="state.newClass" class="title">Edit Class</h1>
+      <h1 ng-if="state.newClass" class="title">New Class</h1>
+      <h1 ng-if="!state.newClass" class="title">Edit Class</h1>
       
       <button class="button button-clear" ng-click="classAddEditModal.hide()">Cancel</button>
     </ion-header-bar>
-    <ion-content class="padding has-header">
+    <ion-content class="padding-top has-header">
       <form class="list">
         <ion-item class="item-divider">Info:</ion-item>
         <label class="item item-input">
@@ -41,9 +83,32 @@
           <span class="input-label">Subject:</span>
           <input type="text" placeholder="Subject" ng-model="state.classSubject">
         </label>
-        
-        <button ng-show="state.newClass" class="button button-positive button-block" ng-click="addClassRecord(state)">Add</button>
-        <button ng-hide="state.newClass" class="button button-positive button-block" ng-click="updateClassRecord(state)">Update</button>
+        <button ng-if="state.newClass" class="button button-positive button-block" ng-click="addClassRecord(state)">Add</button>
+        <button ng-if="!state.newClass" class="button button-positive button-block" ng-click="updateClassRecord(state)">Update</button>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+<!-- modal for adding and editing a class -->
+<script id="templates/clone-class-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+      <h1 class="title">Clone: {{state.srcClassName}} - {{state.srcClassSubject}}</h1>
+      <button class="button button-clear" ng-click="cloneClassModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding-top has-header">
+      <form class="list">
+        <ion-item class="item-divider">Info:</ion-item>
+        <label class="item item-input">
+          <span class="input-label">Name:</span>
+          <input type="text" placeholder="Class Name" ng-model="state.className">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Subject:</span>
+          <input type="text" placeholder="Subject" ng-model="state.classSubject">
+        </label>
+        <button class="button button-positive button-block" ng-click="cloneClassRecord(state)">Clone</button>
       </form>
     </ion-content>
   </ion-modal-view>

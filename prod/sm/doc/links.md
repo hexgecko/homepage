@@ -1,1 +1,0 @@
-[Calculate German Grade](http://www.lehrerfreund.de/schule/1s/notenschluesselrechner/3608)

@@ -1,14 +1,16 @@
 <ion-view title="Report">
-  <ion-content padding="true" class="has-header">
+  <ion-content class="padding-top has-header">
     <h4>Class: {{classRecord.name}} - {{classRecord.subject}}</h4>
     <div class="list">
       <div class="row item-divider ">
-        <div class="col col-75">Name</div>
+        <span class="col col-10">#</span>
+        <span class="col col-66">Name</span>
         <div class="col">Grade</div>
       </div>
-      <div class="row item" ng-repeat="record in gradeList">
-        <div class="col col-75">{{record.firstName}}, {{record.lastName}}</div>
-        <div class="col">{{record.avgGrade-0.5|number:0}}</div>
+      <div class="row item table-item" ng-repeat="record in gradeList|orderBy:'lastName' track by $index">
+        <div class="col col-10" class="enum">{{$index+1}}.</div>
+        <div class="col col-66"><strong>{{record.lastName}}</strong>, {{record.firstName}}</div>
+        <div class="col">{{record.grade|validGrade}}</div>
       </div>
     </div>
     <div class="spacer" style="height: 1em;"></div>

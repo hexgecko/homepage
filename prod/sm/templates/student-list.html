@@ -1,0 +1,90 @@
+<ion-view title="Student List">  
+  <ion-content class="padding-top has-header">
+    <!-- list the students -->
+    <div class="list">
+      <!-- header -->
+      <div class="edit-list-header">
+        <!-- student list header text -->
+        <div>
+          <span>Students: <span ng-if="studentList.length == 0">Empty</span></span>
+        </div>
+        
+        <!-- button for entering student edit mode -->
+        <input type="button"
+               value="Edit"
+               ng-if="!state.showStudentEditMode"
+               ng-click="toggleShowStudentEditMode(state)">
+        
+        <!-- button for creating a new student -->
+        <input type="button"
+               value="New"
+               ng-if="!state.showStudentEditMode"
+               ng-click="showStudentAddEditModal(state)">
+        
+        <!-- button for leaving the edit-mode -->
+        <input type="button"
+               value="Done"
+               style="font-weight: bold"
+               ng-if="state.showStudentEditMode"
+               ng-click="toggleShowStudentEditMode(state)">
+      </div>
+      
+      <div class="spacer" style="height: 1em;"></div>
+      
+      <!-- for filter the names -->
+      <form>
+        <label class="edit-list-item item-input">
+          <i class="icon ion-search placeholder-icon"></i>
+          <input
+                 type="search"
+                 placeholder="Search"
+                 ng-model="state.studentSearch"
+                 ng-change="onSearchChange(state)"
+                 ng-keypress="keyPressed($event)">
+        </label>
+      </form>
+      
+      <div class="edit-list-slider"
+           ng-class="state.showStudentEditMode === true ? 'hg-show' : ''">
+        
+        <div class="edit-list-item"
+             ng-repeat="student in studentList track by $index">
+          
+          <!-- selector for select the an item -->
+          <div class="checkbox">
+            <input type="checkbox"
+                   ng-model="state.markedStudents[$index]">
+          </div>
+          
+          <!-- display information about the student -->
+          <div class="item">
+            <span><strong>{{student.lastName}}</strong>, {{student.firstName}}</span>
+          </div>
+          
+          <!-- button for edit the student item -->
+          <ion-button class="ion-icon ion-edit"
+                      ng-click="showStudentAddEditModal(state, student)">
+          </ion-button>
+        </div>
+      </div>
+      
+      <!-- item -->
+      <div class="edit-list-item"
+           ng-repeat="student in studentList track by $index">
+        
+        <!-- link to student detail -->
+        <a class="item"
+           ng-href="#/tab/student-detail/{{student.$loki}}">
+          <span><strong>{{student.lastName}}</strong>, {{student.firstName}}</span>
+          <i class="ion-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </ion-content>
+  
+  <!-- footer displaying the "Mark All" and "Delete" buttons -->
+  <ion-footer-bar ng-if="state.showStudentEditMode" align-title="right" class="bar-light">
+    <button class="button button-stable" ng-click="unmarkAllStudents(state)">Unselect All</button>
+    <button class="button button-assertive" ng-click="deleteSelectedStudents(state)">Delete</button>
+  </ion-footer-bar>
+</ion-view>

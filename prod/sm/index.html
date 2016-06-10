@@ -2,15 +2,16 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>Student Marker</title>
+    <title>Class Organizer</title>
 
     <!-- stylesheets -->
-    <link href="css/ionic.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     
     <!-- ionic and angularjs -->
-    <script src="libs/ionic.bundle.min.js"></script>
+    <script src="libs/ionic.bundle.js"></script>
 
     <!-- cordova -->
     <script src="cordova.js"></script>
@@ -18,18 +19,19 @@
     <!-- project files -->
     <script src="js/app.js"></script>
     <script src="js/db.js"></script>
-    <script src="js/grade.js"></script>
-    <script src="js/controllers.js"></script>
+    <script src="js/ctrl-class.js"></script>
+    <script src="js/ctrl-student.js"></script>
+    <script src="js/ctrl-setting.js"></script>
     <script src="js/routes.js"></script>
 
     <!-- lokijs files -->
-    <script src="libs/lokijs.min.js"></script>  
+    <script src="libs/lokijs.js"></script>  
     <script src="libs/loki-angular.js"></script>
     <script src="libs/loki-cordova-fs-adapter.js"></script>
   </head>
-  <body ng-app="app" animation="slide-left-right-ios7">
-    <ion-nav-bar class="bar-balanced">
-      <ion-nav-back-button class="button-icon icon ion-ios-arrow-back">Back</ion-nav-back-button>
+  <body ng-app="app">
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button class="button-icon icon ion-ios-arrow-back"></ion-nav-back-button>
     </ion-nav-bar>
     <ion-nav-view></ion-nav-view>
   </body>

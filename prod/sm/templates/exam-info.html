@@ -1,72 +1,33 @@
 <ion-view title="Exam Info">
-  <ion-content class="padding has-header">
-    <h4>{{examRecord.category}}: {{examRecord.name}} ({{state.examDate}})</h4>
-    <!--div class="list">
-      <div class="row item-divider">
-        <div class="col">About:</div>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear" ng-click="saveExamGrade(studentGradeList)" ng-show="state.gradeUpdated">Save</button>
+  </ion-nav-buttons>
+  <ion-content class="padding-top has-header">
+    <h4>
+      <span>{{examGroupRecord.category}}</span>
+      <span ng-if="examRecord.name.length > 0">- {{examRecord.name}}</span>
+      <span>- {{state.examRecordDate}}</span>
+    </h4>
+    <form class="list">      
+      <div class="edit-list-header">
+        <div style="padding-top: 8px; padding-bottom: 8px;"><span>Students Grade:</span></div>
       </div>
-      <div class="row item">
-        <div class="col col-40">Name:</div>
-        <div class="col">{{examRecord.name}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Category:</div>
-        <div class="col">{{examRecord.category}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Date:</div>
-        <div class="col">{{state.examDate}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Weight:</div>
-        <div class="col">{{examRecord.weight}}%</div>
-      </div>
-    </div>
-    
-    <div class="list">
-      <div class="row item-divider">
-        <div class="col">Score:</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Grade 1:</div>
-        <div class="col">{{examRecord.max}} &le; x &lt; {{examRecord.grade1}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Grade 2:</div>
-        <div class="col">{{examRecord.grade1}} &le; x &lt; {{examRecord.grade2}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Grade 3:</div>
-        <div class="col">{{examRecord.grade2}} &le; x &lt; {{examRecord.grade3}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Grade 4:</div>
-        <div class="col">{{examRecord.grade3}} &le; x &lt; {{examRecord.grade4}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Grade 5:</div>
-        <div class="col">{{examRecord.grade4}} &le; x &lt; {{examRecord.grade5}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Grade 6:</div>
-        <div class="col">{{examRecord.grade5}} &le; x &lt; {{examRecord.grade6}}</div>
-      </div>
-    </div-->
-    
-    <form class="list">
-      <div class="row item-divider">
-        <div class="col">Students Result:</div>
-      </div>
-      <div class="row item" ng-repeat="result in studentResultList track by $index">
-        <div class="col col-80">
-          <span><strong>{{result.lastName}}</strong>, {{result.firstName}}</span>
+      <div class="edit-list-item" ng-repeat="grade in studentGradeList|orderBy:'lastName' track by $index">
+        <div class="item">
+          <span class="enum">{{$index+1}}.</span>
+          <span><strong>{{grade.lastName}}</strong>, {{grade.firstName}}</span>
         </div>
-        <div class="col">
-          <i style="padding-right: 3px;" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="display: inline-block; padding-top: 0px; height: initial;" type="number" ng-model="result.score" placeholder="0" ng-change="examResutlChanged(result)" ng>
-        </div>
+        <label class="item item-input">
+          <i class="icon ion-edit placeholder-icon"></i>
+          <input type="number" ng-model="grade.grade" ng-change="gradeChanged(state)" placeholder="0">
+        </label>
+        <!--input type="number" ng-model="grade.grade" ng-change="gradeChanged(state)" placeholder="0"-->
       </div>
+      
+      <button class="button button-positive button-block" ng-click="saveExamGrade(studentGradeList)" ng-if="state.gradeUpdated">Save</button>
     </form>
+    
+    
     <div class="spacer" style="height: 1em;"></div>
   </ion-content>
 </ion-view>

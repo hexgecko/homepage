@@ -1,125 +1,372 @@
-<!-- class info page -->
 <ion-view title="Class Info">
-  <ion-content padding="true" class="has-header">
-    <h3>Class: {{classRecord.name}} - {{classRecord.subject}}</h3>
-    <div class="list">    
-      <a class="button button-dark button-clear icon-left ion-document-text" href="#/tab/class-report/{{state.classId}}">Report</a>
-    </div>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear"
+            ng-if="state.showNoteEditMode || state.showStudentEditMode || state.showExamEditMode"
+            ng-click="toggleShowEditMode(state)">Done</button>
+  </ion-nav-buttons>
+  
+  <ion-content class="padding-top has-header">
+    <!-- list information about the class -->
+    <h4>Class: {{classRecord.name}} - {{classRecord.subject}}</h4>
     <div class="list">
       <div class="row item-divider">
-        <div class="col">About:</div>
+        <span class="col col-80">About:</span>
+        <a class="col button-clear" href="#/tab/class-report/{{state.classId}}">Report</a>
       </div>
-      <div class="row item">
+      <div class="row item table-item">
         <div class="col col-40">Students:</div>
         <div class="col">{{studentList.length}}</div>
       </div>
-      <div class="row item">
+      <div class="row item table-item">
         <div class="col col-40">Exams:</div>
-        <div class="col">{{examList.length}}</div>
+        <div class="col">{{examGroupList.length}}</div>
       </div>
     </div>
     
-    <hr>
-    
+    <!-- list the notes for the class -->
     <div class="list">
-      <button class="button button-dark button-clear icon-left ion-minus-circled" ng-click="toggleShowStudentDeleteButton(state)">Remove</button>
-      <button style="float: right" class="button button-dark button-clear icon-right ion-plus-circled" ng-click="showStudentAddEditModal(state)">Add</button>
+      <!-- header -->
+      <div class="edit-list-header">
+        <!-- header text, clicking on it show/hide the class notes -->
+        <div ng-click="collapseNoteList(classRecord)">
+          <ion-button class="button-icon"
+                      ng-class="classRecord.collapseNoteList ? 'ion-chevron-up' : 'ion-chevron-down'">
+          </ion-button>
+          <span>Notes:<span ng-if="noteList.length == 0">Empty</span></span>
+        </div>
+        
+        <!-- button to enter the edit mode -->
+        <input type="button"
+               value="Edit"
+               ng-if="!state.showNoteEditMode"
+               ng-click="toggleShowNoteEditMode(state)">
+        
+        <!-- button for creating a new class note -->
+        <input type="button"
+               value="New"
+               ng-if="!state.showNoteEditMode"
+               ng-click="showNoteAddEditModal(state)">
+        
+        <!-- button for leaving edit mode -->
+        <input type="button"
+               value="Done"
+               style="font-weight: bold"
+               ng-if="state.showNoteEditMode"
+               ng-click="toggleShowNoteEditMode(state)">
+      </div>
+      
+      <!-- item in edit mode -->
+      <div class="edit-list-slider"
+           ng-class="state.showNoteEditMode === true ? 'hg-show' : ''"
+           ng-if="!classRecord.collapseNoteList">
+        
+        <div class="edit-list-item"
+             ng-repeat="note in noteList track by $index">
+          
+          <!-- checkbox for marging the note -->
+          <div class="checkbox">
+            <input type="checkbox"
+                   ng-model="state.markedNotes[$index]">
+          </div>
+          
+          <!-- note text -->
+          <div class="item">
+            <span><strong>{{note.category}}</strong></span>
+            <p>
+              <strong>{{noteDateList[$index].date}}</strong>
+              <span ng-if="note.comment.length > 0">- {{note.comment}}</span>
+            </p>
+          </div>
+          
+          <!-- button for editing the note -->
+          <ion-button class="ion-icon ion-edit"
+                      ng-click="showNoteAddEditModal(state, note)">
+          </ion-button>
+        </div>
+      </div>
+      
+      <!-- item -->
+      <div class="edit-list-item"
+           ng-if="!classRecord.collapseNoteList"
+           ng-repeat="note in noteList track by $index">
+        <div class="item">
+          <span><strong>{{note.category}}</strong></span>
+          <p>
+            <strong>{{noteDateList[$index].date}}</strong>
+            <span ng-if="note.comment.length > 0">- {{note.comment}}</span>
+          </p>
+        </div>
+      </div>
     </div>
-    <ion-list show-delete="state.showStudentDeleteButton" can-swipe="true">
-      <ion-item class="item-divider">
-        Students:
-        <span ng-show="studentList.length == 0">(Empty)</span>
-      </ion-item>
-      <ion-item ng-repeat="student in studentList track by $index" href="#/tab/student-info/{{student.$loki}}">
-        <ion-delete-button class="ion-icon ion-minus-circled" ng-click="deleteStudentRecord(student, $index)"></ion-delete-button>
-        
-        <ion-option-button class="ion-icon ion-edit" ng-click="showStudentAddEditModal(state, student)"></ion-option-button>
-        
-        <span><strong>{{student.lastName}}</strong>, {{student.firstName}}</span>
-        <i style="float: right" class="icon ion-clipboard"></i>
-      </ion-item>
-    </ion-list><hr>
     
+    <!-- list the students -->
     <div class="list">
-      <button class="button button-dark button-clear icon-left ion-minus-circled" ng-click="toggleShowExamDeleteButton(state)">Remove</button>
-      <button style="float: right" class="button button-dark button-clear icon-right ion-plus-circled" ng-click="showExamAddEditModal(state)">Add</button>
+      <!-- header -->
+      <div class="edit-list-header">
+        <!-- header text and that can collapse the list -->
+        <div ng-click="collapseStudentList(classRecord)">
+          <ion-button class="button-icon"
+                      ng-class="classRecord.collapseStudentList ? 'ion-chevron-up' : 'ion-chevron-down'">
+          </ion-button>
+          <span>Students:<span ng-if="studentList.length == 0">Empty</span></span>
+        </div>
+        
+        <!-- button for entering the edit-mode -->
+        <input type="button"
+               value="Edit"
+               ng-if="!state.showStudentEditMode"
+               ng-click="toggleShowStudentEditMode(state)">
+        
+        <!-- button for adding an existing student -->
+        <input type="button"
+               value="Add"
+               ng-if="!state.showStudentEditMode"
+               ng-click="showStudentPickModal(state)">
+        
+        <!-- button for creating a new studetn -->
+        <input type="button"
+               value="New"
+               ng-if="!state.showStudentEditMode"
+               ng-click="showStudentAddEditModal(state)">
+        
+        <!-- leave the edit-mode -->
+        <input type="button"
+               value="Done"
+               style="font-weight: bold"
+               ng-if="state.showStudentEditMode"
+               ng-click="toggleShowStudentEditMode(state)">
+      </div>
+      
+      <!-- item in edit mode -->
+      <div class="edit-list-slider"
+           ng-class="state.showStudentEditMode === true ? 'hg-show' : ''"
+           ng-if="!classRecord.collapseStudentList">
+        <div class="edit-list-item"
+             ng-repeat="student in studentList track by $index">
+          <!-- checkbox for selection the student -->
+          <div class="checkbox">
+            <input type="checkbox"
+                   ng-model="state.markedStudents[$index]">
+          </div>
+          
+          <!-- show the student information -->
+          <div class="item">
+            <span class="enum">{{$index+1}}.</span>
+            <span><strong>{{student.lastName}}</strong>, {{student.firstName}}</span>
+          </div>
+          
+          <!-- button for edit the student -->
+          <ion-button class="ion-icon ion-edit"
+                      ng-click="showStudentAddEditModal(state, student)">
+          </ion-button>
+        </div>
+      </div>
+      
+      <!-- item -->
+      <div class="edit-list-item"
+           ng-if="!classRecord.collapseStudentList"
+           ng-repeat="student in studentList track by $index">
+        
+        <a class="item" ng-href="#/tab/student-info/{{student.$loki}}">
+          <span class="enum">{{$index+1}}.</span>
+          <span><strong>{{student.lastName}}</strong>, {{student.firstName}}</span>
+          <i class="ion-chevron-right"></i>
+        </a>
+      </div>
     </div>
-    <ion-list show-delete="state.showExamDeleteButton" can-swipe="true">
-      <ion-item class="item-divider">
-        Exams:
-        <span ng-show="examList.length == 0">(Empty)</span>
-      </ion-item>
-      <ion-item ng-repeat="exam in examList track by $index" href="#/tab/exam-info/{{exam.$loki}}">  
-        <ion-delete-button class="ion-icon ion-minus-circled" ng-click="deleteExamRecord(exam, $index)"></ion-delete-button>
+    
+    <!-- list the exams -->
+    <div class="list">
+      <!-- header -->
+      <div class="edit-list-header">
+        <!-- collasable header -->
+        <div ng-click="collapseExamGroupList(classRecord)">
+          <ion-button class="button-icon"
+                      ng-class="classRecord.collapseExamGroupList ? 'ion-chevron-up' : 'ion-chevron-down'">
+          </ion-button>
+          <span>Exams: <span ng-if="examGroupList.length == 0">Empty</span></span>
+        </div>
         
-        <ion-option-button class="ion-icon ion-edit" ng-click="showExamAddEditModal(state, exam)"></ion-option-button>
+        <!-- button to enter edit-mode -->
+        <input type="button"
+               value="Edit"
+               ng-if="!state.showExamEditMode"
+               ng-click="toggleShowExamEditMode(state)">
         
-        <span><strong>{{exam.name}}</strong> - {{exam.category}}</span>
-        <i style="float: right" class="icon ion-clipboard"></i>
-      </ion-item>
-    </ion-list>
-    <div class="spacer" style="height: 1em;"></div>
+        <!-- button to create a new exam -->
+        <input type="button"
+               value="New"
+               ng-if="!state.showExamEditMode"
+               ng-click="showExamItemAddModal(state)">
+        
+        <!-- button to leave edit mode -->
+        <input type="button" value="Done"
+               style="font-weight: bold"
+               ng-if="state.showExamEditMode"
+               ng-click="toggleShowExamEditMode(state)">
+      </div>
+      
+      <!-- exam group/exam in edit-mode -->
+      <div class="edit-list-slider"
+           ng-class="state.showExamEditMode === true ? 'hg-show' : ''"
+           ng-if="!classRecord.collapseExamGroupList">
+        
+        <div ng-init="groupIndex = $index"
+             ng-repeat="examGroup in examGroupList track by $index">
+          
+          <div class="edit-list-item"
+               ng-class="!examGroup.collapseExamList ? 'exam-group' : ''">  
+            <!-- checkbox is shown in edit mode -->
+            <div class="checkbox">
+              <input type="checkbox"
+                     ng-model="state.markedExamGroups[$index]">
+            </div>
+
+            <!-- show the exam group category -->          
+            <div class="item">
+              <span><strong>{{examGroup.category}}</strong></span>
+              <span
+                ng-if="examGroup.collapseExamList && examGroup.examList[0].name.length > 0">
+                - {{examGroup.examList[0].name}}
+              </span>
+              <span
+                class="date-text"
+                ng-if="examGroup.collapseExamList">
+                - {{examGroup.dateList[0]}}
+              </span>
+            </div>
+
+            <!-- edit the group modal -->
+            <ion-button class="ion-icon ion-edit"
+                        ng-click="showExamGroupEditModal(state, examGroup)">
+            </ion-button>
+          </div>
+
+          <!-- exam -->
+          <div class="edit-list-item exam"
+               ng-repeat="exam in examGroup.examList track by $index"
+               ng-if="!examGroup.collapseExamList">
+
+            <!-- checkbox is shown in edit mode -->
+            <div class="checkbox">
+              <input type="checkbox"
+                     ng-model="state.markedExams[groupIndex][$index]">
+            </div>
+
+            <!-- exam info info -->
+            <div class="item">
+              <span ng-if="exam.name.length > 0">- {{exam.name}}</span>
+              <span class="date-text">- {{examGroup.dateList[$index]}}</span>
+            </div>
+
+            <!-- edit the exam -->
+            <ion-button class="ion-icon ion-edit"
+                        ng-click="showExamEditModal(state, exam)">
+            </ion-button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- list the exam groups -->
+      <div ng-init="groupIndex = $index"
+           ng-repeat="examGroup in examGroupList track by $index"
+           ng-if="!classRecord.collapseExamGroupList">        
+        <!-- exam group -->
+        <div class="edit-list-item"
+             ng-class="!examGroup.collapseExamList ? 'exam-group' : ''">
+
+          <!-- show the exam group category -->          
+          <div class="item" ng-click="toggleCollapseExamList(examGroup)">
+            <!-- collapse button for hiding the exam list -->
+            <ion-button
+              class="button-icon"
+              ng-class="examGroup.collapseExamList ? 'ion-chevron-up' : 'ion-chevron-down'">
+            </ion-button>
+            <span><strong>{{examGroup.category}}</strong></span>
+            <span
+              ng-if="examGroup.collapseExamList && examGroup.examList[0].name.length > 0">
+              - {{examGroup.examList[0].name}}
+            </span>
+            <span
+              class="date-text"
+              ng-if="examGroup.collapseExamList">
+              - {{examGroup.dateList[0]}}
+            </span>
+          </div>
+            
+          <!-- attach exam button -->
+          <ion-button
+            class="ion-icon ion-plus-circled"
+            ng-click="showExamAttachModal(state, examGroup)">
+          </ion-button>
+        </div>
+        
+        <!-- exam -->
+        <div class="edit-list-item exam"
+             ng-repeat="exam in examGroup.examList track by $index"
+             ng-if="!examGroup.collapseExamList">
+          
+          <!-- link is shown as default -->
+          <a class="item" ng-href="#/tab/exam-info/{{exam.$loki}}">
+            <span ng-if="exam.name.length > 0">- {{exam.name}}</span>
+            <span class="date-text">- {{examGroup.dateList[$index]}}</span>
+            <i class="ion-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="spacer" style="height: 40em;"></div>
   </ion-content>
+  
+  <!-- footer displaying the "Mark All" and "Delete" buttons -->
+  <ion-footer-bar ng-if="state.showNoteEditMode" align-title="right" class="bar-light">
+    <button class="button button-stable" ng-click="unmarkAllNotes(state)">Unselect All</button>
+    <button class="button button-assertive" ng-click="deleteSelectedNotes(state)">Delete</button>
+  </ion-footer-bar>
+  
+  <!-- footer displaying the "Mark All" and "Delete" buttons -->
+  <ion-footer-bar ng-if="state.showStudentEditMode" align-title="right" class="bar-light">
+    <button class="button button-stable" ng-click="unmarkAllStudents(state)">Unselect All</button>
+    <button class="button button-assertive" ng-click="deleteSelectedStudents(state)">Remove</button>
+  </ion-footer-bar>
+  
+  <!-- footer displaying the "Mark All" and "Delete" buttons -->
+  <ion-footer-bar ng-if="state.showExamEditMode" align-title="right" class="bar-light">
+    <button class="button button-stable" ng-click="unmarkAllExams(state)">Unselect All</button>
+    <button class="button button-assertive" ng-click="deleteSelectedExamGroups(state)">Delete</button>
+  </ion-footer-bar>
 </ion-view>
 
-<!-- modal for adding and editing a student -->
-<script id="templates/student-modal.html" type="text/ng-template">
+<!-- modal for adding and editing a class note -->
+<script id="templates/class-note-modal.html" type="text/ng-template">
   <ion-modal-view>
     <ion-header-bar class="bar bar-header bar-positive">
-      <h1 ng-show="state.newStudent" class="title">New Student</h1>
-      <h1 ng-hide="state.newStudent" class="title">Edit Student</h1>
-      <button class="button button-clear button-primary" ng-click="studentAddEditModal.hide()">Cancel</button>
+      <h1 ng-if="state.newNote" class="title">New Note</h1>
+      <h1 ng-if="!state.newNote" class="title">Edit Note</h1>
+      <button class="button button-clear button-primary" ng-click="noteAddEditModal.hide()">Cancel</button>
     </ion-header-bar>
-    <ion-content class="padding has-header">
+    <ion-content class="padding-top has-header">
       <form class="list">
-        <button ng-show="state.newStudent" class="button button-positive button-block" ng-click="showStudentPickModal(state)">Pick Existing</button>
-        <ion-item class="item-divider">Name</ion-item>
-        <label class="item item-input">
-          <span class="input-label">First:</span>
-          <input type="text" placeholder="First Name" ng-model="state.studentFirstName">
+        <ion-item class="item-divider">Note Info:</ion-item>
+        <label class="item item-select">
+          <span class="input-label">Category:</span>
+          <select ng-model="state.noteCategory">
+            <option>Homework</option>
+            <option>Exam</option>
+            <option>Other</option>
+          </select>
         </label>
         <label class="item item-input">
-          <span class="input-label">Last:</span>
-          <input type="text" placeholder="Last Name" ng-model="state.studentLastName">
+          <span class="input-label">Date:</span>
+          <input type="date" ng-model="state.noteDate">
         </label>
-        <div class="spacer" style="height: 1em;"></div>
-        
-        <ion-item class="item-divider">Gender</ion-item>
-        <ion-radio name="gender" ng-model="state.studentGender" ng-value="'Male'">Male</ion-radio>
-        <ion-radio name="gender" ng-model="state.studentGender" ng-value="'Female'">Female</ion-radio>
-        <div class="spacer" style="height: 1em;"></div>
-        
-        <ion-item class="item-divider">Contact</ion-item>
-        <label class="item item-input">
-          <span class="input-label">Email:</span>
-          <input type="email" placeholder="Email Address" ng-model="state.studentEmail">
+        <label class="item">
+          <span class="input-label">Comment:</span>
+          <textarea style="width: 100%" placeholder="Write a comment here!" ng-model="state.noteComment"></textarea>
         </label>
-        <label class="item item-input">
-          <span class="input-label">Home:</span>
-          <input type="tel" placeholder="Phone Number" ng-model="state.studentHomePhoneNumber">
-        </label>
-        <label class="item item-input">
-          <span class="input-label">Mobile:</span>
-          <input type="tel" placeholder="Mobile Number" ng-model="state.studentMobilePhoneNumber">
-        </label>
-        <div class="spacer" style="height: 1em;"></div>
-        
-        <ion-item class="item-divider">Address</ion-item>
-        <label class="item item-input">
-          <span class="input-label">Street:</span>
-          <input type="text" placeholder="Street Name" ng-model="state.studentStreet">   
-        </label>
-        <label class="item item-input">
-          <span class="input-label">City:</span>
-          <input type="text" placeholder="City Name" ng-model="state.studentCity">   
-        </label>
-        <label class="item item-input">
-          <span class="input-label">Postal Code:</span>
-          <input type="text" placeholder="Postal Code" ng-model="state.studentPostalCode">   
-        </label>
-        
-        <button ng-show="state.newStudent" class="button button-positive button-block" ng-click="addStudentRecord(state)">Add</button>
-        <button ng-hide="state.newStudent" class="button button-positive button-block" ng-click="updateStudentRecord(state)">Update</button>
+        <button ng-if="state.newNote" class="button button-positive button-block" ng-click="addNoteRecord(state)">Add</button>
+        <button ng-if="!state.newNote" class="button button-positive button-block" ng-click="updateNoteRecord(state)">Update</button>
       </form>
     </ion-content>
   </ion-modal-view>
@@ -129,17 +376,17 @@
 <script id="templates/pick-student-modal.html" type="text/ng-template">
   <ion-modal-view>
     <ion-header-bar class="bar bar-header bar-positive">
-      <h1 class="title">Pick Student</h1>
+      <h1 class="title">Add Existing Student</h1>
       <button class="button button-clear button-primary" ng-click="studentPickModal.hide()">Cancel</button>
     </ion-header-bar>
-    <ion-content class="padding has-header">
+    <ion-content class="padding-top has-header">
       <form class="list">
         <label class="item item-input">
           <i class="icon ion-search placeholder-icon"></i>
-          <input type="search" placeholder="Search" ng-model="state.studentPickSearch">
+          <input type="search" placeholder="Search" ng-model="state.studentPickSearch" ng-change="onPickSearchChange(state)" ng-keypress="keyPressed($event)">
         </label>
         <ion-list>
-          <ion-item ng-repeat="student in state.studentPickList | filter:state.studentPickSearch | filter:filterStudentAlreadyAdded track by $index" ng-click="studentPicked(state, student)">
+          <ion-item ng-repeat="student in state.studentPickList | filter:filterStudentAlreadyAdded track by $index" ng-click="studentPicked(state, student)">
             <span><strong>{{student.lastName}}</strong>, {{student.firstName}}</span>
           </ion-item>
         </ion-list>
@@ -149,91 +396,120 @@
 </script>
 
 <!-- modal for adding and editing an exam -->
-<script id="templates/exam-modal.html" type="text/ng-template">
+<script id="templates/exam-item-modal.html" type="text/ng-template">
   <ion-modal-view>
     <ion-header-bar class="bar bar-header bar-positive">
-      <h1 ng-show="state.newExam" class="title">New Exam</h1>
-      <h1 ng-hide="state.newExam" class="title">Edit Exam</h1>
-      <button class="button button-clear button-primary" ng-click="examAddEditModal.hide()">Cancel</button>
+      <h1 ng-if="state.newExamItem" class="title">New Exam</h1>
+      <h1 ng-if="!state.newExamItem" class="title">Edit Exam</h1>
+      <button class="button button-clear button-primary" ng-click="examItemAddEditModal.hide()">Cancel</button>
     </ion-header-bar>
-    <ion-content class="padding has-header">
+    <ion-content class="padding-top has-header">
       <form class="list">
         <ion-item class="item-divider">Info:</ion-item>
-        <label class="item item-input">
-          <span class="input-label">Name:</span>
-          <input type="text" placeholder="Exam Name" ng-model="state.examName">
-        </label>
         <label class="item item-select">
           <span class="input-label">Category:</span>
-          <select ng-model="state.examCategory">
+          <select ng-model="state.examGroupCategory">
             <option>Test</option>
             <option>Essay</option>
             <option>Exam</option>
             <option>Presentation</option>
             <option>Oral</option>
+            <option>Other</option>
           </select>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Name:</span>
+          <input type="text" placeholder="Exam Name" ng-model="state.examName">
         </label>
         <label class="item item-input">
           <span class="input-label">Date:</span>
           <input type="date" ng-model="state.examDate">
         </label>
         <ion-item class="range range-dark">Weight:
-          <input type="range" value="50" min="0" max="100" ng-model="state.examWeight">
-          <span>{{state.examWeight}}%</span>
+          <input type="range" value="50" min="0" max="100" ng-model="state.examGroupWeight">
+          <span>{{state.examGroupWeight}}%</span>
         </ion-item>
-        <div class="spacer" style="height: 1em;"></div>
-        
-        <ion-item class="item-divider">Score:</ion-item>
+        <button ng-if="state.newExamItem" class="button button-positive button-block" ng-click="addExamItemRecord(state)">Add</button>
+        <button ng-if="!state.newExamItem" class="button button-positive button-block" ng-click="updateExamItemRecord(state)">Update</button>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+<!-- modal for attach exam to a group-->
+<script id="templates/exam-attach-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+      <h1 class="title">New Exam</h1>
+      <button class="button button-clear button-primary" ng-click="examAttachModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding-top has-header">
+      <form class="list">
+        <ion-item class="item-divider">Info:</ion-item>
         <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Max:</span>
-          <span style="font-size: 14px; font-style: italic; width: 9em"></span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examMax">
+          <span class="input-label">Name:</span>
+          <input type="text" placeholder="Exam Name" ng-model="state.examName">
         </label>
         <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Grade 1:</span>
-          <span style="font-size: 14px; font-style: italic; text-align: right; width: 3em">{{state.examMax}}</span>
-          <span style="font-size: 14px; font-style: italic; text-align: center; width: 6em">&le; x &lt;</span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examGrade1">
+          <span class="input-label">Date:</span>
+          <input type="date" ng-model="state.examDate">
+        </label>
+        <button class="button button-positive button-block" ng-click="addExamRecord(state)">Add</button>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+<!-- modal for edit a group -->
+<script id="templates/exam-group-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+      <h1 class="title">Edit Exam Group</h1>
+      <button class="button button-clear button-primary" ng-click="examGroupModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding-top has-header">
+      <form class="list">
+        <ion-item class="item-divider">Info:</ion-item>
+        <label class="item item-select">
+          <span class="input-label">Category:</span>
+          <select ng-model="state.examGroupCategory">
+            <option>Test</option>
+            <option>Essay</option>
+            <option>Exam</option>
+            <option>Presentation</option>
+            <option>Oral</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <ion-item class="range range-dark">Weight:
+          <input type="range" value="50" min="0" max="100" ng-model="state.examGroupWeight">
+          <span>{{state.examGroupWeight}}%</span>
+        </ion-item>
+        <button class="button button-positive button-block" ng-click="updateExamGroupRecord(state)">Update</button>
+      </form>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+<!-- modal for editing an attach exam to a group -->
+<script id="templates/exam-edit-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+      <h1 class="title">Edit Exam</h1>
+      <button class="button button-clear button-primary" ng-click="examEditModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding-top has-header">
+      <form class="list">
+        <ion-item class="item-divider">Info:</ion-item>
+        <label class="item item-input">
+          <span class="input-label">Name:</span>
+          <input type="text" placeholder="Exam Name" ng-model="state.examName">
         </label>
         <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Grade 2:</span>
-          <span style="font-size: 14px; font-style: italic; text-align: right; width: 3em">{{state.examGrade1}}</span>
-          <span style="font-size: 14px; font-style: italic; text-align: center; width: 6em">&le; x &lt;</span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examGrade2">
+          <span class="input-label">Date:</span>
+          <input type="date" ng-model="state.examDate">
         </label>
-        <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Grade: 3</span>
-          <span style="font-size: 14px; font-style: italic; text-align: right; width: 3em">{{state.examGrade2}}</span>
-          <span style="font-size: 14px; font-style: italic; text-align: center; width: 6em">&le; x &lt;</span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examGrade3">
-        </label>
-        <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Grade 4:</span>
-          <span style="font-size: 14px; font-style: italic; text-align: right; width: 3em">{{state.examGrade3}}</span>
-          <span style="font-size: 14px; font-style: italic; text-align: center; width: 6em">&le; x &lt;</span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examGrade4">
-        </label>
-        <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Grade 5:</span>
-          <span style="font-size: 14px; font-style: italic; text-align: right; width: 3em">{{state.examGrade4}}</span>
-          <span style="font-size: 14px; font-style: italic; text-align: center; width: 6em">&le; x &lt;</span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examGrade5">
-        </label>
-        <label class="item item-input">
-          <span class="input-label" style="padding-left: 0.5em;">Grade 6:</span>
-          <span style="font-size: 14px; font-style: italic; text-align: right; width: 3em">{{state.examGrade5}}</span>
-          <span style="font-size: 14px; font-style: italic; text-align: center; width: 6em">&le; x &lt;</span>
-          <i style="width: 2.3em" class="ion-icon ion-edit placeholder-icon"></i>
-          <input style="padding-top: 0px;" type="number" placeholder="" ng-model="state.examGrade6">
-        </label>
-        <button ng-show="state.newExam" class="button button-positive button-block" ng-click="addExamRecord(state)">Add</button>
-        <button ng-hide="state.newExam" class="button button-positive button-block" ng-click="updateExamRecord(state)">Update</button>
+        <button class="button button-positive button-block" ng-click="updateExamRecord(state)">Update</button>
       </form>
     </ion-content>
   </ion-modal-view>

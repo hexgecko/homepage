@@ -1,0 +1,1 @@
+angular.module("app.settingctrl",["app.db"]).controller("settingCtrl",["$scope",function(){}]);

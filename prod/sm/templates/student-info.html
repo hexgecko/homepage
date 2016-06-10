@@ -1,129 +1,186 @@
 <ion-view title="Student Info">
-  <ion-content class="padding has-header">
+  <ion-nav-buttons side="right">
+    <button class="button button-clear" ng-if="state.showEditMode" ng-click="toggleShowEditMode(state)">Done</button>
+  </ion-nav-buttons>
+  <ion-content class="padding-top has-header">
     <h4>Student: {{studentRecord.lastName}}, {{studentRecord.firstName}} ({{studentRecord.gender}})</h4>
-    <!--div class="list">
-      <div class="row item-divider">
-        <div class="col">Name/Gender:</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">First Name:</div>
-        <div class="col">{{studentRecord.firstName}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Last Name:</div>
-        <div class="col">{{studentRecord.lastName}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Gender:</div>
-        <div class="col">{{studentRecord.gender}}</div>
-      </div>
-    </div-->
     
-    <hr>
-    <div class="list"> 
-      <button class="button button-dark button-clear icon-left ion-minus-circled" ng-click="toggleShowNoteDeleteButton(state)">Delete</button>
-      <button style="float: right" class="button button-dark button-clear icon-right ion-plus-circled" ng-click="showNoteAddEditModal(state)">New</button>
-    </div>
-    <ion-list show-delete="state.showNoteDeleteButton" can-swipe="true">
-      <ion-item class="item-divider">
-        Notes:
-        <span ng-show="noteList.length == 0">(Empty)</span>
-      </ion-item>
-      <ion-item ng-repeat="note in noteList track by $index">
-        <ion-delete-button class="ion-icon ion-minus-circled" ng-click="deleteNoteRecord(note, $index)"></ion-delete-button>
-        
-        <ion-option-button class="ion-icon ion-edit" ng-click="showNoteAddEditModal(state, note)"></ion-option-button>
-        
-        <span><strong>{{note.category}}</strong></span>
-        <p><strong>{{noteDateList[$index].date}}:</strong> {{note.comment}}</p>
-      </ion-item>
-    </ion-list>
-    <div class="spacer" style="height: 1em;"></div>
-    
-    <h4>Result:</h4>
-    <div class="list" ng-repeat="class in classList track by $index">
-      <div class="row item-divider">
-        <div class="col">{{class.name}} - {{class.subject}}</div>
-      </div>
-      <div class="row item" ng-repeat="exam in class.examResult track by $index">
-        <div class="col col-50">{{exam.category}}: {{exam.name}}</div>
-        <div class="col">{{exam.weight}}%</div>
-        <div class="col">{{exam.grade}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-50"><strong>Grade:</strong></div>
-        <div class="col"><strong>{{class.sumWeight}}%</strong></div>
-        <div class="col"><strong>{{class.avgGrade-0.5 | number:0}}</strong> ({{class.avgGrade | number:1}})</div>
-      </div>
-    </div>
-    
-    <h4>Information:</h4>
+    <!-- list the notes for the students -->
     <div class="list">
-      <div class="row item-divider">
-        <div class="col">Contact:</div>
+      <!-- header -->
+      <div class="edit-list-header">
+        <!-- collapsble header --> 
+        <div ng-click="collapseNoteList(studentRecord)">
+          <ion-button class="button-icon"
+                      ng-class="studentRecord.collapseNoteList ? 'ion-chevron-up' : 'ion-chevron-down'">
+          </ion-button>
+          <span>Notes: <span ng-if="noteList.length == 0">Empty</span></span>
+        </div>
+        
+        <!-- button for entering edit mode -->
+        <input type="button"
+               value="Edit"
+               ng-if="!state.showEditMode"
+               ng-click="toggleShowEditMode(state)">
+        
+        <!-- button for createing a new note -->
+        <input type="button"
+               value="New"
+               ng-if="!state.showEditMode"
+               ng-click="showNoteAddEditModal(state)">
+        
+        <!-- button for exit edit mode -->
+        <input type="button"
+               value="Done"
+               style="font-weight: bold"
+               ng-if="state.showEditMode"
+               ng-click="toggleShowEditMode(state)">
       </div>
-      <div class="row item">
-        <div class="col col-40">Email:</div>
-        <div class="col">{{studentRecord.email}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Phone Home:</div>
-        <div class="col">{{studentRecord.homePhoneNumber}}</div>
-      </div>
-      <div class="row item">
-        <div class="col col-40">Phone Mobile:</div>
-        <div class="col">{{studentRecord.mobilePhoneNumber}}</div>
-      </div>
-    </div>
       
-    <div class="list">
-      <div class="row item-divider">
-        <div class="col">Address:</div>
+      <!-- item in edit-mode -->
+      <div class="edit-list-slider"
+           ng-class="state.showEditMode === true ? 'hg-show' : ''"
+           ng-if="!studentRecord.collapseNoteList">
+        
+        <div class="edit-list-item"
+             ng-repeat="note in noteList track by $index">
+          
+          <!-- selected the node -->
+          <div class="checkbox">
+            <input type="checkbox"
+                   ng-model="state.markedNotes[$index]">
+          </div>
+          
+          <!-- note information -->
+          <div class="item">
+            <span><strong>{{note.category}}</strong></span>
+            <p>
+              <strong>{{noteDateList[$index].date}}</strong>
+              <span ng-if="note.comment.length > 0">- {{note.comment}}</span>
+            </p>
+          </div>
+          
+          <!-- button for edit the node -->
+          <ion-button class="ion-icon ion-edit"
+                      ng-click="showNoteAddEditModal(state, note)">
+          </ion-button>
+        </div>
       </div>
-      <div class="row item">
+      
+      <!-- item -->
+      <div class="edit-list-item"
+           ng-repeat="note in noteList track by $index"
+           ng-if="!studentRecord.collapseNoteList">
+        
+        <div class="item">
+          <span><strong>{{note.category}}</strong></span>
+          <p>
+            <strong>{{noteDateList[$index].date}}</strong>
+            <span ng-if="note.comment.length > 0">- {{note.comment}}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- contact information -->
+    <div class="list" ng-if="hasContacts(studentRecord)">
+      <div class="row item-divider">
+        <span class="col">Contact:</span>
+      </div>
+      <div class="row item table-item">
+        <div class="col col-40">Email:</div>
+        <a class="col" ng-href="mailto:{{studentRecord.email}}">{{studentRecord.email}}</a>
+      </div>
+      <div class="row item table-item">
+        <div class="col col-40">Phone Home:</div>
+        <a class="col"
+           ng-href="tel:{{studentRecord.homePhoneNumber}}}">
+          {{studentRecord.homePhoneNumber}}
+        </a>
+      </div>
+      <div class="row item table-item">
+        <div class="col col-40">Phone Mobile:</div>
+        <a class="col"
+           ng-href="tel:{{studentRecord.mobilePhoneNumber}}">
+          {{studentRecord.mobilePhoneNumber}}
+        </a>
+      </div>
+    </div>
+    
+    <!-- address information -->
+    <div class="list" ng-if="hasAddress(studentRecord)">
+      <div class="row item-divider">
+        <span class="col">Address:</span>
+      </div>
+      <div class="row item table-item">
         <div class="col col-40">Street:</div>
         <div class="col">{{studentRecord.street}}</div>
       </div>
-      <div class="row item">
+      <div class="row item table-item">
         <div class="col col-40">City:</div>
         <div class="col">{{studentRecord.city}}</div>
       </div>
-      <div class="row item">
+      <div class="row item table-item">
         <div class="col col-40">Postal Code:</div>
         <div class="col">{{studentRecord.postalCode}}</div>
       </div>
     </div>
-      
-    <div class="list">
+    
+    <!-- grade list -->
+    <div class="list" ng-repeat="class in classGradeList track by $index">
       <div class="row item-divider">
-        <div class="col">Classes:</div>
+        <span class="col">Grade: Class: {{class.name}} - {{class.subject}}</span>
       </div>
-      <div class="row item" ng-repeat="class in classList track by $index">
+      <div class="row item table-item" ng-repeat="grade in class.gradeList track by $index">
+        <div class="col col-50">{{grade.category}}: {{grade.name}}</div>
+        <div class="col">{{grade.weight}}%</div>
+        <div class="col">{{grade.grade|validGrade}}</div>
+      </div>
+      <div class="row item table-item">
+        <div class="col col-50"><strong>Grade:</strong></div>
+        <div class="col"><strong>{{class.sumWeight}}%</strong></div>
+        <div class="col"><strong>{{class.avgGrade|validGrade}}</strong></div>
+      </div>
+    </div>
+    
+    <!-- class list -->
+    <div class="list" ng-if="hasClasses(classList)">
+      <div class="row item-divider">
+        <span class="col">Classes:</span>
+      </div>
+      <div class="row item table-item" ng-repeat="class in classList track by $index">
         <div class="col">{{class.name}} - {{class.subject}}</div>
       </div>
     </div>
-    <div class="spacer" style="height: 1em;"></div>
+    <div class="spacer" style="height: 40em;"></div>
   </ion-content>
+  
+  <!-- footer displaying the "Mark All" and "Delete" buttons -->
+  <ion-footer-bar ng-if="state.showEditMode" align-title="right" class="bar-light">
+    <button class="button button-stable" ng-click="unmarkAllNotes(state)">Unselect All</button>
+    <button class="button button-assertive" ng-click="deleteSelectedNotes(state)">Delete</button>
+  </ion-footer-bar>
 </ion-view>
 
 <!-- modal for adding and editing a note -->
-<script id="templates/note-modal.html" type="text/ng-template">
+<script id="templates/student-note-modal.html" type="text/ng-template">
   <ion-modal-view>
     <ion-header-bar class="bar bar-header bar-positive">
-      <h1 ng-show="state.newNote" class="title">New Note</h1>
-      <h1 ng-hide="state.newNote" class="title">Edit Note</h1>
+      <h1 ng-if="state.newNote" class="title">New Note</h1>
+      <h1 ng-if="!state.newNote" class="title">Edit Note</h1>
       <button class="button button-clear button-primary" ng-click="noteAddEditModal.hide()">Cancel</button>
     </ion-header-bar>
-    <ion-content class="padding has-header">
+    <ion-content class="padding-top has-header">
       <form class="list">
         <ion-item class="item-divider">Note Info:</ion-item>
         <label class="item item-select">
           <span class="input-label">Category:</span>
           <select ng-model="state.noteCategory">
-            <option>Absent</option>
+            <option>Unauthorized Absence</option>
             <option>Forgot Homework</option>
             <option>Forgot Notes</option>
             <option>Late</option>
+            <option>Valid Absence</option>
             <option>Other</option>
           </select>
         </label>
@@ -135,8 +192,8 @@
           <span class="input-label">Comment:</span>
           <textarea style="width: 100%" placeholder="Write a comment here!" ng-model="state.noteComment"></textarea>
         </label>
-        <button ng-show="state.newNote" class="button button-positive button-block" ng-click="addNoteRecord(state)">Add</button>
-        <button ng-hide="state.newNote" class="button button-positive button-block" ng-click="updateNoteRecord(state)">Update</button>
+        <button ng-if="state.newNote" class="button button-positive button-block" ng-click="addNoteRecord(state)">Add</button>
+        <button ng-if="!state.newNote" class="button button-positive button-block" ng-click="updateNoteRecord(state)">Update</button>
       </form>
     </ion-content>
   </ion-modal-view>

@@ -1,0 +1,67 @@
+<!-- modal for adding and editing a student -->
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header bar-positive">
+    <h1 ng-if="state.newStudent" class="title">New Student</h1>
+    <h1 ng-if="!state.newStudent" class="title">Edit Student</h1>
+    <button class="button button-clear button-primary" ng-click="studentAddEditModal.hide()">Cancel</button>
+  </ion-header-bar>
+  <ion-content class="padding-top has-header">
+    <form class="list" name="studentForm">
+      <ion-item class="item-divider" ng-click="collapseNameForm(state)">
+        <ion-button class="button-icon" ng-class="state.collapseNameForm ? 'ion-chevron-up' : 'ion-chevron-down'" ></ion-button>
+        <span>Name:</span>
+      </ion-item>
+      <label class="item item-input" ng-hide="state.collapseNameForm">
+        <span class="input-label">Last:</span>
+        <input type="text" placeholder="Last Name" ng-model="state.studentLastName">
+      </label>
+      <label class="item item-input" ng-hide="state.collapseNameForm">
+        <span class="input-label">First:</span>
+        <input type="text" placeholder="First Name" ng-model="state.studentFirstName">
+      </label>
+      <ion-item class="item-divider" ng-hide="state.collapseNameForm">Gender:</ion-item>
+      <ion-radio name="gender" ng-model="state.studentGender" ng-value="'Male'" ng-hide="state.collapseNameForm">Male</ion-radio>
+      <ion-radio name="gender" ng-model="state.studentGender" ng-value="'Female'" ng-hide="state.collapseNameForm">Female</ion-radio>
+      <div class="spacer" style="height: 1em;"></div>
+
+      <ion-item class="item-divider" ng-click="collapseContactForm(state)">
+        <ion-button class="button-icon" ng-class="state.collapseContactForm ? 'ion-chevron-up' : 'ion-chevron-down'"></ion-button>
+        <span>Contact:</span>
+      </ion-item>
+      <label class="item item-input" ng-hide="state.collapseContactForm">
+        <span class="input-label">Email:
+          <span ng-show="studentForm.email.$error.email">(Not valid)</span>
+        </span>
+        <input type="email" name="email" placeholder="Email Address" ng-model="state.studentEmail">
+      </label>
+      <label class="item item-input"  ng-hide="state.collapseContactForm">
+        <span class="input-label">Home:</span>
+        <input type="tel" placeholder="Phone Number" ng-model="state.studentHomePhoneNumber">
+      </label>
+      <label class="item item-input" ng-hide="state.collapseContactForm">
+        <span class="input-label">Mobile:</span>
+        <input type="tel" placeholder="Mobile Number" ng-model="state.studentMobilePhoneNumber">
+      </label>
+      <div class="spacer" style="height: 1em;"></div>
+
+      <ion-item class="item-divider" ng-click="collapseAddressForm(state)">
+        <ion-button class="button-icon" ng-class="state.collapseAddressForm ? 'ion-chevron-up' : 'ion-chevron-down'"></ion-button>
+        <span>Adress:</span>
+      </ion-item>
+      <label class="item item-input" ng-hide="state.collapseAddressForm">
+        <span class="input-label">Street:</span>
+        <input type="text" placeholder="Street Name" ng-model="state.studentStreet">   
+      </label>
+      <label class="item item-input" ng-hide="state.collapseAddressForm">
+        <span class="input-label">City:</span>
+        <input type="text" placeholder="City Name" ng-model="state.studentCity">   
+      </label>
+      <label class="item item-input" ng-hide="state.collapseAddressForm">
+        <span class="input-label">Postal Code:</span>
+        <input type="text" placeholder="Postal Code" ng-model="state.studentPostalCode">   
+      </label>
+      <button ng-if="state.newStudent" class="button button-positive button-block" ng-click="addStudentRecord(state)">Add</button>
+      <button ng-if="!state.newStudent" class="button button-positive button-block" ng-click="updateStudentRecord(state)">Update</button>
+    </form>
+  </ion-content>
+</ion-modal-view>
