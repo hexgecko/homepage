@@ -46,6 +46,12 @@ p {
     text-align: center;
 }
 
+/* Scale the image if it's less then the screen size. */
+img {
+  height: auto;
+  max-width: 100%;
+}
+
 /* Links */
 a {
     color: #1abc9c;
