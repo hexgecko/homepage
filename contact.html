@@ -1,1 +1,171 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>HexGecko - Contact</title><meta name='viewport' content='width=device-width, initial-scale=1.0'><link rel='stylesheet' type='text/css' href='style.css' media='all'/><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-74618316-1', 'auto');ga('send', 'pageview');</script></head><body><header><div id='logo'><a href='index.html'><img src='img/hex-gecko-logo.jpg' alt='HexGecko Logo'/></a></div><nav id='navbar' role='navigation'><ul class='menu'><li><a href='index.html'>HOME</a></li><li><a href='blog.html'>BLOG</a></li><li class='current_page_item'><a href='contact.html'>CONTACT</a></li></ul></nav></header><main role='main'><article id='content' role='article'><h1>Contact</h1><p>Email: info &lt;at> hexgecko.com </p></article><aside id='archive' role='complementary'><p><strong>New Website:</strong></p><p><em>Welcome to our new website. Please have a look around, any feedback is much appreiated.</em></p><p><br/><strong>Posts:</strong></p><p><em><a href='using-github-as-host-for-your-website.html'>Using GitHub as Host for your Website.</a></em></p></aside></main><footer id='footer' role='contentinfo'>&copy;2016 HexGecko</footer></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="assets/img/favicon.png">
+
+  <title>HexGecko - Contect</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+
+
+  <!-- Custom styles for this template -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript">
+    function onSubmitContact(name, email, subject, message, gotcha) {
+      if (gotcha.value.length === 0 && email.value.length > 0) {
+        // show the thank your dialog
+        $("#thanks-modal").modal("show");
+
+        // send the request
+        var url = "https://formspree" + ".io/in" + "fo@hexg" + "ecko.com";
+        $.ajax({
+          url: url,
+          method: "POST",
+          data: {
+            name: name.value,
+            email: email.value,
+            subject: subject.value,
+            message: message.value,
+          },
+          dataType: "json"
+        });
+
+        // clear the email input
+        $("#nameIntput").val("");
+        $("#emailInput").val("");
+        $("#subjectInput").val("");
+        $("#messageInput").val("");
+      }
+      return true;
+    }
+  </script>
+
+  <script type="text/javascript">
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-74618316-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <!-- Thanks modal -->
+  <div id="thanks-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- modal content-->
+      <div class="modal-content modal-sm">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Thank your for the Message!</h4>
+        </div>
+        <div class="modal-body">
+          <p>Your request will be handled as soon a possible.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Static navbar -->
+  <div class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <a class="navbar-brand no-link" href="index.html">
+          <img src="assets/img/logo.png" alt="Logo" /> HexGecko
+        </a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a class="no-link" href="index.html">Home</a></li>
+          <li><a class="no-link" href="blog.html">Blog</a></li>
+          <li><a class="no-link page-selected" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- +++++ Contact Section +++++ -->
+  <div class="container pt">
+    <div class="row mt">
+      <div class="col-lg-6 col-lg-offset-3 centered">
+        <h3>CONTACT US</h3>
+        <hr>
+        <p>If you have any questions, suggestions or just want to say hello. Please contact us with the form below.</p>
+      </div>
+    </div>
+    <div class="row mt">
+      <div class="col-lg-8 col-lg-offset-2">
+        <form role="form" action="javascript:onSubmitContact(nameInput,emailInput,subjectInput,messageInput,gotchaInput)">
+          <div class="form-group">
+            <input type="name" class="form-control" id="nameInput" placeholder="Your Name">
+            <br>
+          </div>
+          <div class="form-group">
+            <input type="email" class="form-control" id="emailInput" placeholder="Enter Email">
+            <br>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" id="subjectInput" placeholder="Subject">
+            <br>
+          </div>
+          <input type="text" style="display:none" id="gotchaInput">
+          <textarea class="form-control" rows="6" id="messageInput" placeholder="Enter your text here..."></textarea>
+          <br>
+          <button type="submit" class="btn btn-success">SUBMIT</button>
+        </form>
+      </div>
+    </div>
+    <!-- /row -->
+  </div>
+  <!-- /container -->
+
+  <!-- +++++ Footer Section +++++ -->
+  <div id="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <h4>Address</h4>
+          <p>
+            HexGecko<br/> Segerstadsvägen 161E<br/> 352 63 Växjö<br/> Sweden
+          </p>
+        </div>
+        <!-- /col-lg-4 -->
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/bootstrap.min.js"></script>
+</body>
+
+</html>
