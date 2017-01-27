@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <!-- navbar -->
+  <header>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a id="dropdown-menu-header"
+               href="/" class="dropdown-toggle"
+               data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Notes <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/notes">HTML Structure</a></li>
+              <li><a href="notes-css.html">CSS</a></li>
+              <li><a href="notes-javascript.html">Javascript</a></li>
+              <li><a href="notes-bootstrap.html">Bootstrap</a></li>
+              <li><a href="notes-ux-for-web.html">UX for Web</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-gulp.html">Gulp</a></li>
+              <li class="active"><a href="notes-ionic.html">Ionic</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-copywriting.html">Copywriting</a></li>
+              <li><a href="notes-adwords.html">AdWords</a></li>
+              <li><a href="notes-market-research.html">Market Research</a></li>
+              <!-- content -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  
+  <section id="content" class="container">
+
+<!-- COPY YOUR CONTENT BETWEEN HERE -->
+
+<h1>AngularJS</h1>
+
+<p>To use the angular script add and <em>ng-app</em> to the <em>head</em> tag.</p>
+
+<p><strong>Controler</strong>
+To define a controller in AngularJS use the fallowing code:</p>
+
+<pre><code>function PlayerCtrl($scope) {
+  $scope.players = {
+    'Fred' = {
+      'name' : 'Fred',
+      'rank' : 2
+    },
+    'Mike' = {
+      'name' : 'Mike',
+      'rank' : 3
+    }
+  }
+}
+</code></pre>
+
+<p>Where the $ says to the Angular that it's a controller.</p>
+
+<p>The data and function in the scope can then be by adding the <em>ng-controller</em> to the parent element. An example how to interate the controller by adding an <em>ng-controller="PlayerCtrl</em> attribute in the parent (container) elemebt and do a <em>ng-repeat="player in players"</em> in a list control:</p>
+
+<pre><code>&lt;div class="container" ng-controller="PlayerCtrl"gr;
+  &lt;ul&gt;
+    &lt;li ng-repeat="player in players"&gt;{{player.name}} - {{player.rank}}&lt;/li&gt;
+  &lt;/ul&gt;
+&lt/div&gt;
+</code></pre>
+
+<p><strong>Filter</strong>
+To add a filer to the result add an | in the placeholder with the filer name:</p>
+
+<pre><code>{{player.name | uppercase}}
+</code></pre>
+
+<p>There is a lot of other filter an they should be used for presentation when no changing the data.</p>
+
+<p>The user can include a partial html file by adding the adding a <em>ng-include src="scopePropertiesPath"</em> to and <em>div</em> tag that span the where the html data should be displayed. But Ionic use the <em>ui-router</em>, so it's not applicable for Ionic.</p>
+
+<h1>Notes About Ionic</h1>
+
+<p>If you want to look and get an example there is a lot of examples <a href="http://codepen.io/ionic/pens/public/">here</a>. The porject is create like this:</p>
+
+<pre><code>ionic start flickrApp http://codepen.io/ionic/pen/CrInw
+</code></pre>
+
+<p>Start a ionic server with the command:</p>
+
+<pre><code>ionic server -l
+</code></pre>
+
+<p>Where the <em>-l</em> flag display the apps for both IOS and Android devices in a browser.</p>
+
+<p><a href="http://ionicons.com">Site for getting the name of the existing icons.</a></p>
+
+<p>Ionic uses the MVC (Model View Control) Architecture where:</p>
+
+<ul>
+<li><strong>Model</strong> is the data used in the application</li>
+<li><strong>View</strong> is a <em>template</em> with html code</li>
+<li><strong>Control</strong> is JavaScript code written with AngularJS</li>
+</ul>
+
+<p>Adding a <em>ng-model="query"</em> attribute to an input tag will put the query filled with the text out the input into the control $scope.</p>
+
+<p>Ionic use <em>ui-router</em> to display different page within the application.</p>
+
+<p>Add data to the link for sening information in the url like: _url: "/list/:aId"</p>
+
+<p>A good thing to update the pages afterwards is to update the style sheet to update the styles.</p>
+
+<h1>Tools used by Ionic</h1>
+
+<ul>
+<li>AngularJS for the behaviour, (good to know how it works)</li>
+<li>Cordova for distribution on IOS, Andriod and Microsoft Mobile</li>
+<li>Sass for the look and it extends CSS, only have to know this if to change the theme.</li>
+<li>Gulp</li>
+<li>Git</li>
+<li>Bower for installing things.</li>
+</ul>
+
+<h1>Ionic Widget</h1>
+
+<ul>
+<li>&lt;ion-nav-bar&gt; is used for the navigation bar</li>
+<li>&lt;ion-nav-view&gt; is where the contains is displayed</li>
+</ul>
+
+<!-- COPY YOUR CONTENT BETWEEN HERE -->
+
+  </section>
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <p>&copy;HexGecko 2017</p>
+  </footer>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

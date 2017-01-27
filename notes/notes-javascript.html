@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <!-- navbar -->
+  <header>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a id="dropdown-menu-header"
+               href="/" class="dropdown-toggle"
+               data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Notes <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/notes">HTML Structure</a></li>
+              <li><a href="notes-css.html">CSS</a></li>
+              <li class="active"><a href="notes-javascript.html">Javascript</a></li>
+              <li><a href="notes-bootstrap.html">Bootstrap</a></li>
+              <li><a href="notes-ux-for-web.html">UX for Web</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-gulp.html">Gulp</a></li>
+              <li><a href="notes-ionic.html">Ionic</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-copywriting.html">Copywriting</a></li>
+              <li><a href="notes-adwords.html">AdWords</a></li>
+              <li><a href="notes-market-research.html">Market Research</a></li>
+              <!-- content -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  
+  <section id="content" class="container">
+
+<!-- COPY YOUR CONTENT BETWEEN HERE -->
+
+<h1>What is JavaScript?</h1>
+
+<p>It's the programming language of the web! It create interactivity like click, drag, tab, swipe, etc. Most commonly used for front-end development, but it's also used for end-end development as well, as Node.js. Don't use JavaScript for things like hover and focus event, because CSS can handle these thinks better.</p>
+
+<p>Reference to JavaScript:</p>
+
+<ul>
+<li><a href="developer.mozilla.org/en-US/docs/Web/JavaScript">Mozilla Developer Network</a></li>
+<li>JavaScript: The Good Parts by Douglas Crockford</li>
+<li>Apple: Developer Tools for Safari Overview</li>
+<li><a href="developers.google.com/chrome-developer-tools">Google: Chrome Developer Tools</a></li>
+<li>QuirksMode.org: Reference to what works where with difference web browsers.</li>
+</ul>
+
+<p>To make the JavaScript interpreter compile without the sloopy style the developer can add <em>"use string";</em> in the beginning of the source code.</p>
+
+<p>JavaScript is function scoped, so all variables belong to the function.</p>
+
+<h2>The Basic of Web Creating</h2>
+
+<p>HTML:       markup language (content)
+CSS:        style sheet language (presentation)
+JavaScript: programming language (behavior)</p>
+
+<p>Include JavaScipt with  &lt;script src="my-javascript.js"/&gt; and add them in the bottom of the body tag if the script is not used for creating the page.</p>
+
+<p>Make a declaration without assigning it like "var year;" will but the variable as undefined.</p>
+
+<p>To check the <strong>equality</strong> between two variable use "==, but on can be a string and the other on can be an integer.</p>
+
+<p>To check for <strong>strict equality</strong> between two variable use "===", here the to variables must be equal and have the same type.</p>
+
+<h2>Page outlines</h2>
+
+<p>DOM: Document Object Model, it's the outline of the page. There is a lot of methods for manipulating object on the page, the most common is:</p>
+
+<ul>
+<li>document.getElementById: it's the fastes but there are others.</li>
+<li>Lot of properties to change like: value, checked, className and id.</li>
+<li>document.getElementById("id-of-element").value</li>
+</ul>
+
+<p>To add a sumit button:</p>
+
+<pre><code>document.getElementById("sumbit-button-id").addEventListener("sumit"), function(evt) {
+  evt.preventDefault(); // prevent a reload of the page
+}
+</code></pre>
+
+<p>To set a default value if a null is returned, a or (||) can be used after the state, it's called sanitation, ex:</p>
+
+<pre><code>var value = parseInt(document.getElementById("element-id").value, 10) || 0;
+</code></pre>
+
+<p>To watch a contest of a tag with a given id the innerHTML member can be used, ex:</p>
+
+<pre><code>console.log(document.getElementById("element-id").innerHTML);
+</code></pre>
+
+<p>To set the attribute of an element the methods <em>getAttribute(name)</em> and <em>setAttribute(name, value)</em> can be used.</p>
+
+<p>To create a new element the method <em>document.createElement(name), then the new element can be added by the method _appendChild(element);</em>. To update the text in the element a <em>document.createTextNode(str);</em> can be used an then the text is inserted with <em>appendChilde(node);</em>, below is an example:</p>
+
+<pre><code>var parentElement = document.getElementById('parent-element-id');
+var newElement = document.createElement('li');
+var textNode = document.createTextNode("List text");
+newElement.appendChild(textNode);
+parentElement.appendChild(newElement);
+</code></pre>
+
+<p>To create a new element for the document the <em>document.createElement("li");</em> can be used</p>
+
+<h2>Service API</h2>
+
+<p>Many services offer a JavaScript API like:</p>
+
+<ul>
+<li>Google Mapsq</li>
+<li>Bing Maps</li>
+<li>YouTube</li>
+<li>Vimeo</li>
+<li>SoundCloud</li>
+</ul>
+
+<p>Search for "<service>" JavaScript API (SDK)</p>
+
+<h2>Google Maps JavaScript API</h2>
+
+<p><a href="https://developers.google.com/maps/documentation/javascript/">Link to the Google JavaScript API</a></p>
+
+<p>A geocode can be aquired from geocode finder.</p>
+
+<h2>Print Log and Debug Information</h2>
+
+<p>Examples of writing to the console:</p>
+
+<pre><code>console.log("log message");
+console.debug("debug message");
+console.warn("warning message");
+console.error("error message")
+</code></pre>
+
+<h2>Number</h2>
+
+<p>All number are stored as an 64-bit floating bit number in JavaScript.</p>
+
+<p>To conver a string a number, use the Number function. It return <em>NaN</em> if it failes and can be checked with the function <em>isNaN()</em>, example:</p>
+
+<pre><code>var foo = "55";
+var myNumber = Number(foo);
+if(isNaN(myNumber)) {
+  console.log("It's not a number!")
+}
+</code></pre>
+
+<p>There is a Math object that has many good methods for handle number like round(n), PI and cos(n);</p>
+
+<h2>String</h2>
+
+<p>String are object that have some member like <em>length</em>, <em>split()</em>, <em>indexOf(s)</em>, <em>slice()</em> and comparation example:</p>
+
+<pre><code>var str = "This is my string."
+console.log(str.length);
+</code></pre>
+
+<h2>Function</h2>
+
+<p>If a function doesn's belong to an object i.e. it's not a method the <em>this</em> variable points to the <em>global object</em>.</p>
+
+<p>The argument can be read from the <em>arguments</em> array.</p>
+
+<h2>Arrays</h2>
+
+<p>Can be declared like this:</p>
+
+<pre><code>var array = [];
+var array = [1,2,3];
+var array = new Array(size); // array are objects
+var array = Array(size);
+</code></pre>
+
+<p>An example how to interate an array:</p>
+
+<pre><code>for(var key in array) {
+  consol.log(array[key]);
+}
+</code></pre>
+
+<p>Because the array it as some member that can give information or manipulate the data:</p>
+
+<pre><code>var array = [1,2,3];
+console.log(array.length); // log the length
+var reversedArray = array.reverse(); // reverse the order to 3,2,1
+console.log(reversedArray.join()); // log the array as a string "3,2,1"
+var sortArray = array.sort() // return the array order [1,2,3]
+</code></pre>
+
+<h2>Object</h2>
+
+<p>Objects are container for variables and function, these are called properties. An example below shows how to create an object:</p>
+
+<pre><code>var player = new Object();
+player.name = "Fred";
+player.score = 10000;
+player.rank = 1;
+</code></pre>
+
+<p>or they can be created in  a short hand like:</p>
+
+<pre><code>var player = { "name" : "Fred", "Score" : 10000, "rank" : 1};
+</code></pre>
+
+<p>Here is an example how to create a method to the object:</p>
+
+<pre><code>function playerDetails() {
+  console.log(this.name + " has a rank of: " + this.rank)
+}
+player.logDetails = playerDetails;
+</code></pre>
+
+<h2>How to create a Prototype</h2>
+
+<p>This is an example how to create a prototype for a player:</p>
+
+<pre><code>function Player(name) {
+  this.name = name;
+}
+
+Player.protoype.getName() {
+  return this.name;
+}
+
+var fred = new Player('Fred');
+console.log(fred.getName());
+</code></pre>
+
+<h2>Module</h2>
+
+<p>To call a function by it self it can be declared anonym like this example:</p>
+
+<pre><code>var MyModule = (function() {
+  return {
+    foo : function() {
+      console.log('foo');
+      return this;
+    },
+    bar = function() {
+      console.log('bar');
+      return this;
+    }
+  }
+})();
+</code></pre>
+
+<p>This this often used in modules, the example above us a chaining so it can be called like:</p>
+
+<pre><code>MyModule.foo().bar().foo();
+</code></pre>
+
+<h2>Event</h2>
+
+<p>Event that happen to children element, if it's not handled, then it'll be past to there parent's element.</p>
+
+<p>Event listener can be added in two ways, by adding a function to the element's event or add it with the <em>addEventListener(eventName, function, false);</em>. Several event functions can be added to the same event using this method. An example:</p>
+
+<pre><code>element.onclick = function() { /* do somthing */ };
+element.addEventListener('click', functionName, false);
+</code></pre>
+
+<h2>Timer</h2>
+
+<p>There are two timers <em>setTimeout(timeoutFunction, time);</em> that will only be called once. There is also <em>setInterval(intervalFunction, time);</em> that will be called all the time with the given interval. The interval can then be stoped by using <em>clearInterval(handle);</em>.</p>
+
+<h2>Form</h2>
+
+<h2>Form</h2>
+
+<h3>Main Events</h3>
+
+<pre><code>onsumit
+</code></pre>
+
+<h2>TextField</h2>
+
+<h3>Main Property</h3>
+
+<pre><code>myTextField.value
+</code></pre>
+
+<h3>Main Events</h3>
+
+<pre><code>onfocus (when starting editing)
+onblur (when stop eding and focus on something else)
+onchange (both onfocus and onblur)
+onkeypress
+onkeydown
+onkeyup
+</code></pre>
+
+<h2>Checkbox adn Radio Button</h2>
+
+<h3>Main Property</h3>
+
+<pre><code>myCheckBox.checked (true or false)
+</code></pre>
+
+<h3>Main Events</h3>
+
+<pre><code>onclick
+onchange
+</code></pre>
+
+<h2>Select List</h2§>
+
+<h3>Main Property</h3>
+
+<pre><code>mySelect.type ("select-one" or "select-multiple")
+mySelect.selectedIndex ("select-on")
+mySelect.options[x].selected ("select-multiple")
+</code></pre>
+
+<h3>Main Events</h3>
+
+<pre><code>onchange
+</code></pre>
+
+<h2>CSS Style</h2>
+
+<p>A style of an element can be changed by the <em>style</em> properties, all the style is name the same as in CSS but using the camel case instead of hyphens.</p>
+
+<h2>JavaScript Writing Styles</h2>
+
+<pre><code>if(x) {
+  // ...
+} else {
+  // ...
+}
+</code></pre>
+
+<h2>Tools</h2>
+
+<p>Minification is used for improve the loading time of the script. Here are some tools for minimize the code:</p>
+
+<ul>
+<li>JSMin</li>
+<li>YUI Compressor</li>
+<li>Google Closure Compiler (online)</li>
+</ul>
+
+<p>Check for problem</p>
+
+<ul>
+<li><a href="http://jslint.com">Jslint</a></li>
+</ul>
+
+<p>Library</p>
+
+<ul>
+<li>Modernizr, for check the feature that the browser supports.</li>
+<li>jQuery UI, has some nice user interface button etc.</li>
+</ul>
+
+<h2>Introduction to jQuery</h2>
+
+<p><a href="http://jquery.com">Can be downloaded here</a></p>
+
+<p>The basic syntax for jQuery is</p>
+
+<pre><code>$("what-to-find").someAction(any Params)
+</code></pre>
+
+<h2>Content Distribution Network (CDN)</h2>
+
+<p>Using a CDN can improved the loading speed of the website, because the script can be download parallel and be cached on the local browser.</p>
+
+<h2>Regular Expressions</h2>
+
+<p>This is how to declare a reqular expression:</p>
+
+<pre><code>var myRe = /hello/;
+var myRe = new RegExp("hello");
+</code></pre>
+
+<p>where the <em>hello</em> can be changed to the expression.</p>
+
+<h2>AJAX</h2>
+
+<p>AJAX (Asynchronous JavaScript And XML) is used to request data from a server in the JavaScript without reloading the page. jQuery support this.</p>
+
+<!-- COPY YOUR CONTENT BETWEEN HERE -->
+  </section>
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <p>&copy;HexGecko 2017</p>
+  </footer>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

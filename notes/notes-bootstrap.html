@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <!-- navbar -->
+  <header>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a id="dropdown-menu-header"
+               href="/" class="dropdown-toggle"
+               data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Notes <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/notes">HTML Structure</a></li>
+              <li><a href="notes-css.html">CSS</a></li>
+              <li><a href="notes-javascript.html">Javascript</a></li>
+              <li class="active"><a href="notes-bootstrap.html">Bootstrap</a></li>
+              <li><a href="notes-ux-for-web.html">UX for Web</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-gulp.html">Gulp</a></li>
+              <li><a href="notes-ionic.html">Ionic</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-copywriting.html">Copywriting</a></li>
+              <li><a href="notes-adwords.html">AdWords</a></li>
+              <li><a href="notes-market-research.html">Market Research</a></li>
+              <!-- content -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  
+  <section id="content" class="container">
+
+<!-- COPY YOUR CONTENT BETWEEN HERE -->
+
+<h1>Bootstrap</h1>
+
+What is bootstrap?
+
+<ol>
+<li>It's a framework.</li>
+<li>Mobile first.</li>
+<li>Responsive design.</li>
+<li>Battle tested - tested on many web browsers.</li>
+</ol>
+
+<p>Can create a customised css/script "building" it on the bootstraps homepage.</p>
+
+<h2>Containers</h2>
+
+<ol>
+<li>Fixed container, has breakpoints depended on the width.</li>
+<li>Fluid container, alwas fill the hole width.</li>
+<li>Row, place horizontal groups of columns and should be placed within an container.</li>
+<li>Column, placed in a row and have the format "col-SIZE-SPAN".</li>
+</ol>
+
+<p>If the column format doesn't work by some reason, it can be reset with <em>clearfix</em>.</p>
+
+<p>One can <em>offset</em> to put empty column for special sizes, <em>col-xs-offset-3</em>. Here the column will start at the 4th column.</p>
+
+<p>Rows can be used within other rows to nest them.</p>
+
+<p>Customise the order dependent on the screen width with <em>push</em> and <em>pull</em>, example <em>col-xs-push-3</em>.</p>
+
+<p>Class attribute <em>caption</em> gives some extra padding.</p>
+
+<h2>Format Style and Alignment</h2>
+
+<p>Can style thing to look like an <em>h1</em> by adding the <em>class="h1"</em> to your an element.</p>
+
+<p>There are also some extra styles like: <em>lead</em>.</p>
+
+<p>And some extra element: <em>maked</em>, <em>smaller</em>, <em>s</em>, <em>del</em>, <em>ins</em>, <em>u</em>, <em>strong</em>, <em>b</em>, <em>i</em> and <em>em</em>.</p>
+
+<p>Alignment of text is user with the fpllowing classes <em>text-left</em>, <em>text</em>center_ and <em>text</em>right_ to align the text.</p>
+
+<p>Changing the text formating can be user with the following classes <em>text</em>justify<em>, _text</em>nowrap<em>, _text</em>underline_ and <em>text</em>capitalize_</p>
+
+<p>Quote can be done with the <em>blockquote</em> element fallow by a <em>p</em> and <em>footer</em> element.</p>
+
+<h2>List</h2>
+
+<p>Unstyle list with the <em>list-unstyled</em> attribute.</p>
+
+<p>Put item side by side can be done with the <em>list-inline</em> attribute.</p>
+
+<p>Other list: <em>list-group</em> and <em>panel</em></p>
+
+<h2>Button</h2>
+
+<p>Button should have the class attribute <em>btn btn-[type]</em> where the type can be: <em>default</em>, <em>primary</em>, <em>success</em>, <em>info</em>, <em>warning</em> and <em>danger</em>.</p>
+
+<p>Change the size by giving a class attribute <em>btn-[size]</em> where size can be <em>btn-lg</em>, <em>btn-sm</em> and <em>btn-xs</em> for Large, Small and Extra Small.</p>
+
+<p>Make the button blockable with the class <em>btn-block</em> attribute.</p>
+
+<p>Change the state of the button with the class attribute <em>btn-active</em> and <em>btn-disabled</em></p>
+
+<h2>Images</h2>
+
+<p>Make the image responsive with the class attribute <em>img-responsive</em> to center it use <em>center-block</em> attribute.</p>
+
+<p>Rounded, thumbnail and circle edges with the class attribute: <em>img-rounded</em>, <em>img-thumbnail</em> and <em>img-circle</em>.</p>
+
+<p><em>Media</em> class attribute is a good way to format images.</p>
+
+<h2>Helper</h2>
+
+<p>Change the text format with the class attributes: <em>text-muted</em>, <em>text-primary</em> etc...</p>
+
+<p>Change the backround with the class attributes: <em>bg-primary</em> etc...</p>
+
+<h2>Responsive Utilities</h2>
+
+<p>Have the format <em>[visibility]-[size](-display)</em> where:</p>
+
+<ul>
+<li><em>Visibilty</em>: visible or hidden</li>
+<li><em>Size</em>: xs, sm, md, lg or print</li>
+<li><em>Display</em>: block, inline, inline-block or print</li>
+</ul>
+
+<h2>Form</h2>
+
+<p>Use <em>label</em> with <em>for</em> attribute, importen for mobile and screen reader.</p>
+
+<p>Format the input with the class attribute <em>form-control</em> and add them as a group with the other by putting them with in a <em>div</em> element with the class attribute <em>form-group</em>.</p>
+
+<pre><code>&lt;div class="form-group"&gt;
+  &lt;label for="my-input"&gt;My Input:&lt;/label&gt;
+  &lt;input type="text" id="my-input" placeholder="Your Name..."/&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Checkbox and Radio input would have the following format:</p>
+
+<pre><code>&lt;div class="checkbox|radio"&gt;
+  &lt;label&gt;
+    &lt;input type="checkbox|radio"&gt;
+    My Checkbox|Radio
+  &lt;/label&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Only have one Radio or Checkbox selected, add a name attribute with the same "name".</p>
+
+<p>Can use column container within the form.</p>
+
+<p>Bootstrap also have validation class attribute, read more on there homepage.</p>
+
+<h2>Navbar</h2>
+
+<p>Can have the navbar atop of everything with the attribute <em>data-spy="affix"</em> and the offset for when it will be display can be set with <em>data-offset-top="100"</em> attribute.</p>
+
+<!-- COPY YOUR CONTENT BETWEEN HERE -->
+
+  </section>
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <p>&copy;HexGecko 2017</p>
+  </footer>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

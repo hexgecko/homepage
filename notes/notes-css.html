@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <!-- navbar -->
+  <header>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a id="dropdown-menu-header"
+               href="/" class="dropdown-toggle"
+               data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Notes <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/notes">HTML Structure</a></li>
+              <li class="active"><a href="notes-css.html">CSS</a></li>
+              <li><a href="notes-javascript.html">Javascript</a></li>
+              <li><a href="notes-bootstrap.html">Bootstrap</a></li>
+              <li><a href="notes-ux-for-web.html">UX for Web</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-gulp.html">Gulp</a></li>
+              <li><a href="notes-ionic.html">Ionic</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-copywriting.html">Copywriting</a></li>
+              <li><a href="notes-adwords.html">AdWords</a></li>
+              <li><a href="notes-market-research.html">Market Research</a></li>
+              <!-- content -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  
+  <section id="content" class="container">
+    <!-- COPY YOUR CONTENT BETWEEN HERE -->
+      
+      <h1>What is CSS</h1>
+      <p>CSS is the clothing for web pages.</p>
+
+      <p>Web Developer by Chris Pederick is a nice plugin for the web browser for getting information about the site.</p>
+
+      <p>The terminology about the css tag:</p>
+      <blockquote>h1 { color: #333; font-size: 12px }</blockquote>
+
+      <p>Where color and font-size is a property, #333 and 12px is values. Both the properties and value is a declaration and it should end with a ';'. The objects within the brackets are called a declaration block. The h1 is the selector, in this example, all h1 tag in the HTML document will be affected. All of the declaration is called a rule.</p>
+
+
+      <h2>Selectors</h2>
+      <p>If the selector starts with a '#', then it means it references to a tag with the id attributes. If the selector has the structure of h1#main_header the it's applicable to h1 that has the id of "main_header". To reference to a tag with a given class attribute a '.' is used. Example .first reference to all tag with the class attribute. To reference to a type of tag with the class attribute, the tag name comes before the '.', same as for the IDs. To change all tag of certain types within a tag, div for example.</p>
+      <blockquote>#idname p { font-style: italic; }.</blockquote>
+
+      <p>If two selectors apply to the same element, the one with the highest specificity wins. There are four distinct categories that define the level of a given selector: inline styles, IDs classes + attributes and elements. If the two have the same rules, the lastest win. Always try to use ids to increase the specificity and a class selector is always higher then an element selector.</p>
+
+      <table style="width:100%">
+        <tr>
+          <td>* { }</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>li { }</td>
+          <td>1 (one element)</td>
+        </tr>
+        <tr>
+          <td>li:first-line { }</td>
+          <td>2 (one element, one pseudo-element)</td>
+        </tr>
+        <tr>
+          <td>ul li { }</td>
+          <td>2 (two elements)</td>
+        </tr>
+        <tr>
+          <td>ul ol+li { }</td>
+          <td>3 (three elements)</td>
+        </tr>
+        <tr>
+          <td>h1 + *[rel=up] { }</td>
+          <td>11 (one attribute, one element)</td>
+        </tr>
+        <tr>
+          <td>ul ol li.red { }</td>
+          <td>13 (one class, three elements)</td>
+        </tr>
+        <tr>
+          <td>li.red.level { }</td>
+          <td>21 (two classes, one element)</td>
+        </tr>
+        <tr>
+          <td>style=""</td>
+          <td>1000 (one inline styling)</td>
+        </tr>
+        <tr>
+          <td>p { }</td>
+          <td>1 (one HTML selector)</td>
+        </tr>
+        <tr>
+          <td>div p { }</td>
+          <td>2 (two HTML selectors)</td>
+        </tr>
+        <tr>
+          <td>.sith</td>
+          <td>10 (one class selector)</td>
+        </tr>
+        <tr>
+          <td>div p.sith { }</td>
+          <td>12 (two HTML selectors and a class selector)</td>
+        </tr>
+        <tr>
+          <td>#sith</td>
+          <td>100 (one id selector)</td>
+        </tr>
+        <tr>
+          <td>body #darkside .sith p { }</td>
+          <td>112 (HTML selector, id selector, class selector, HTML selector; 1+100+10+1)</td>
+        </tr>
+      </table>
+
+      <p>To add an importance to a declaration will overwrite all another element with no important, an example:</p>
+      <blockquote>h1 {background: green !important;}</blockquote>
+      <p>This a good way to check is nothing changes depend on a specificity error or something else. However, don't forget to remove then afterward.</p>
+
+      <p>A style sheet can be impeded into the html document by adding a '&lt;style type="text/css"/&gt;' in the head tag. But the most common method is to link to file by adding a '&lt;link rel="stylesheet" type="text/css" href="base.css"/ media="all"&gt;' tag within the head tag.</p>
+
+      <p>To import the other stylesheet into a stylesheet:</p>
+      <blockquote>@import 'url("path-to-my-other.css);'</blockquote>
+      <p>But they must come first within the style tag.</p>
+
+      <p>Selectors can be group together by putting a ',' between then in the declaration, an example:</p>
+      <blockquote>h1, h2, h3 {text-transform: uppercase}</blockquote>
+
+      <h2>Box Model</h2>
+      <p>Box model is the margin around the element, there are these properties: margin, border and padding. Here is an example:</p>
+      <blockquote>p {margin: 1em; border: 1px solid #000; padding: 1em}</blockquote>
+      <p>where an em, relative to the font size, so 1 is the same as the font size.</p>
+
+      <p>A good way to see the border of an element is change the color for the background.</p>
+
+      <h2>Float</h2>
+      <p>Simple floating: an image can float left or right.</p>
+
+      <p>This is an example how to use a content and a sidebar next to it:</p>
+      <blockquote>
+        #content {float: left; padding: 0 20em 4em 3 em}<br/>
+        #sidebar {float: right; width: 17em; margin: 0 0 4em -18em}
+      </blockquote>
+
+      <p>To but the footer at the bottom a clear properties can be used, here is an example:</p>
+      <blockquote>#footer {clear: both}</blockquote>
+
+      <p>To make the ordered list in the navigation to be next to each other without, one can use this trick:</p>
+      <blockquote>#navlinks li {display: inline; list-style: none}</blockquote>
+
+      <h2>Colours</h2>
+      <p>The ways to give colours with css is: #RRGGBB, rgb(128,200,432) or rgb(10%,20%,30%), an example for setting the for the body:</p>
+      <blockquote>body {background-color: #E3EDC2}</blockquote>
+
+      <p>A background image that is but side by side can be used to with the background-image, here is an example:</p>
+      <blockquote>body {background-image: url(images/background.gif)}</blockquote>
+
+      <p>Where the URL is a relative path. The side on side depends on the background-repeat that can have the fallowing values: repeat, repeat-x, repeat-y and no-repeat. The position of the image can be set with background-position. All of these can be but in just a background properties:</p>
+      <blockquote>body {background: url(img/img.gif) repeat 0 0 rgb(85%,85%,0%)}</blockquote>
+
+      <p>To change the padding between to the lines, a line-height can be used with the value is the different times the font size.</p>
+
+      <h2>Font and Text</h2>
+      <p>The font style and weight can be changed with the font-style and font-weight, in the example below give the font a tilt and make it bold.</p>
+      <blockquote>p {font-style: italic; font-weight: bold}</blockquote>
+
+      <p>To change the lower case letter to upper but smaller the upper case the fallowing declaration can be used:</p>
+      <blockquote>h1 {font-variant: small-caps}</blockquote>
+
+      <p>The font size can be changed in relative to its parent, like:</p>
+      h1 {font-size: 2em}
+
+      <p>The font can be changed by changing its family like this:</p>
+      <blockquote>
+        p {font-family: Verdana, Arial, Helvetica, sans-serif}<br/>
+        p {font-family: "Courier New", monospace}
+      </blockquote>
+
+      <p>The short form for setting the font is:</p>
+      <blockquote>p {font: bold italic small-caps 2em/1.5em Arial, sans-serif}</blockquote>
+      <p>Where the size and font style most come last, the 1.5em is the line-height</p>
+
+      <p>Alignment of the text can be used with the text-align: right|left|center|justify</p>
+
+      <p>Text can be transformed to upper or lower characters using the text-transform: uppercase|lowercase|capitalize</p>
+
+      <p>To make a line over, under or through can make the text-decoration with the values underline|overline|line-through</p>
+
+      <p>Here is an example how to create a navigation links with lines between then:</p>
+      <blockquote>
+        #navlinks {margin: 0; padding: 0.5em 3em}<br/>
+        #navlinks li {margin-right: 0.5em; border-right: 1px solid #99C; padding-right: 0.75em}<br/>
+        #navlinks li.last {border-right: 0}
+      </blockquote>
+
+    <!-- COPY YOUR CONTENT BETWEEN HERE -->
+  </section>
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <p>&copy;HexGecko 2017</p>
+  </footer>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

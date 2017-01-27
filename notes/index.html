@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <!-- navbar -->
+  <header>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a id="dropdown-menu-header"
+               href="/" class="dropdown-toggle"
+               data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Notes <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li class="active"><a href="/notes">HTML Structure</a></li>
+              <li><a href="notes-css.html">CSS</a></li>
+              <li><a href="notes-javascript.html">Javascript</a></li>
+              <li><a href="notes-bootstrap.html">Bootstrap</a></li>
+              <li><a href="notes-ux-for-web.html">UX for Web</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-gulp.html">Gulp</a></li>
+              <li><a href="notes-ionic.html">Ionic</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="notes-copywriting.html">Copywriting</a></li>
+              <li><a href="notes-adwords.html">AdWords</a></li>
+              <li><a href="notes-market-research.html">Market Research</a></li>
+              <!-- content -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  
+  <section id="content" class="container">
+    <!-- COPY YOUR CONTENT BETWEEN HERE -->
+
+    <h1>HTML Structure</h1>
+    <p>Documentation about the HTML5 standard can be found <a href="http://drafts.htmlwg.org/html/master/">here</a>. Especial the index at the bottom is usable because it contains all the tags.</p>
+
+    <p>The <i>p</i> tag stands for paragraph.</p>
+
+    <p>HTML5 document type declaration tag <i>!doctype html</i>. All document start with an <i>n</i> tag, a good thing could be to have a language attribute <i>lang="en"</i> so the web browser knows the language the page is using. Then the document needs a head and body tag. In the head the title tag and meta tag with the attribute <i>charset="utf-8"</i>.</p>
+
+    <p>For checking the outline of your HTML5 document, one can user HTML5 outliner or HeadingsMap for chrome.</p>
+
+    <p>The figure element is used for illustrating things, but it doesn't have to be an image.
+      <p>
+
+        <p>The <i>div</i> element should only be a user when you need to group other elements for style purposes.</p>
+
+        <p>The <i>address</i> element represents the nearest <i>article</i> or <i>body</i> element.</p>
+
+        <p>The <i>time</i> element should be used for time and date information. If it's not in a valid format you need to add the valid date to a <i>datetime</i> attribute. Time should be in the current timezone the author is in.</p>
+
+        <p>Links is set with an <i>a</i> or <i>link</i> tag and can have a <i>rel</i> attribute to tell how the search engine, etc. should follow the link, like:</p>
+        <ul>
+          <li><b>next:</b> next document in a series</li>
+          <li><b>prev:</b> last document in a series</li>
+          <li><b>nofollow:</b> tell the search engine that this document is not relative to the given link.</li>
+          <li><b>stylesheet:</b> for a link for importing a stylesheet.</li>
+        </ul>
+
+        <p>The <i>meta</i> element set the character set with the <i>charset</i> attribute, but it can also be set to a name attribute to give meta information about the site, description is usually used to give as summary as the search result. The <i>name</i> attribute can also be used to format how the page should look if someone twittered or link it on facebook.</p>
+
+        <p>The <i>class</i> attribute can be used at several places and it used for example CSS to identify the tag type. The <i>id</i> attributes should only be used once per document to identify a specified element.</p>
+
+        <p>Landmark roles, a role for a section could be <i>application</i>, <i>banner</i>, <i>complementary</i>,<i>contentinfo</i>, <i>form</i>, <i>main</i>, <i>navigation</i> and <i>search</i>. These are used by screen reader.</p>
+
+        <p>Schema meta tag is used by the search engine for categorising a section. An example could be that a movie can have a name, director, genre and trailer. These attributes are defined at schema.org.</p>
+
+        <p>After adding the metadata tag, the presentation of the search result of the page can be tested by using the Structured Data Testing Tool in google's Webmaster.</p>
+
+        <p>New elements tag for HTML5 for a section, except for the old <i>h1-6 </i> and <i>div</i>, is <i>article</i>, <i>aside</i>, <i>nav</i> and <i>section</i>. There is a new tag for grouping element: <i>footer</i>, <i>header</i> and <i>main</i>. Here is an example how to use the new tags element:</p>
+
+        <blockquote>
+          &lt;head&gt;<br/> &nbsp;&nbsp;&lt;meta charset="utf-8"/&gt<br/> &nbsp;&nbsp;&lt;meta name="description" content="This page describes information about trees."/&gt<br/> &lt;/head&gt
+          <br/> &lt;body&gt;
+          <br/> &nbsp;&nbsp;&lt;header&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1>Exploring Trees&lt;/h1&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;nav&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- page navigation --&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;/nav&gt
+          <br/> &nbsp;&nbsp;&lt;/header&gt
+          <br/> &nbsp;&nbsp;&lt;main&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;article id="types"&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gtTree types&lt;/h2&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gtDeciduous tree&lt;/h3&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h4&gtWhite Spruce&lt;/h4&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h4&gtBalsam Fir&lt;/h4&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;/article&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;article id="care"&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gtTaking Care of Trees&lt;/h2&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gtBasic tree mainatenace&lt;/h3&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gtProper water levels&lt;/h3&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;/article&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;aside&gt;
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;Learning about trees&lt;/h2&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;/aside&gt
+          <br/> &nbsp;&nbsp;&lt;/main&gt
+          <br/> &nbsp;&nbsp;&lt;footer&gt
+          <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gtContact me&lt;/h2&gt<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gtHere!&lt;/p&gt
+          <br/> &nbsp;&nbsp;&lt;/footer&gt
+          <br/> &lt;/body&gt
+          <br/>
+        </blockquote>
+
+        <!-- COPY YOUR CONTENT BETWEEN HERE -->
+  </section>
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <p>&copy;HexGecko 2017</p>
+  </footer>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
