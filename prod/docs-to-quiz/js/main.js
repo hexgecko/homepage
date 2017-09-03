@@ -10,7 +10,7 @@ convertButton.addEventListener("click", function() {
 
   while(index < lines.length) {
     // search the lines for a "#" start charachter
-    if(lines[index].charAt(0) === "#") {
+    if(lines[index].charAt(0) === '#') {
       var topic = lines[index].match(/\s.*/g);
       var quiz = {
         id: uuidv4(),
@@ -21,11 +21,15 @@ convertButton.addEventListener("click", function() {
         trivial: lines[index+9]
       };
 
-      if(lines[index+10] !== undefined && lines[index+10].length !== 0) {
+      if(lines[index+10] !== undefined &&
+        lines[index+10].length > 2 &&
+        lines[index+11].charAt(0) !== '#') {
         quiz.questionImageSrc = "file:///android_asset/img/" + lines[index+10];
       }
 
-      if(lines[index+11] !== undefined && lines[index+11].length !== 0) {
+      if(lines[index+11] !== undefined &&
+        lines[index+11].length > 2 &&
+        lines[index+11].charAt(0) !== '#') {
         quiz.trivialImageSrc = "file:///android_asset/img/" + lines[index+11];
       }
 
