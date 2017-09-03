@@ -17,9 +17,17 @@ convertButton.addEventListener("click", function() {
         topic: (topic !== null ? topic[0].substr(1) : ""),
         question: lines[index+1],
         correctAnswer: lines[index+3],
-        wrongAnswers: [lines[index+5], lines[index+6], lines[index+7]],
+        falseAnswers: [lines[index+5], lines[index+6], lines[index+7]],
         trivial: lines[index+9]
       };
+
+      if(lines[index+10] !== undefined && lines[index+10].length !== 0) {
+        quiz.questionImageSrc = "file:///android_asset/img/" + lines[index+10];
+      }
+
+      if(lines[index+11] !== undefined && lines[index+11].length !== 0) {
+        quiz.trivialImageSrc = "file:///android_asset/img/" + lines[index+11];
+      }
 
       quizArray.push(quiz);
     }
