@@ -1,0 +1,27 @@
+body {
+  background-color: #bdf4eb;
+}
+
+h1 {
+  line-height: 1.5em;
+  font-size: 1.5em;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0
+}
+
+h2 {
+  line-height: 1.5em;
+  font-size: 1.2em;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0
+}
+
+textarea {
+  width: 60em;
+}
+
+button {
+  display: block;
+  font-size: 1em;
+  font-weight: 500;
+}
