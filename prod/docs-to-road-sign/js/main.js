@@ -44,5 +44,5 @@ convertButton.addEventListener("click", function() {
   }
 
   // print the json format
-  quizJson.value = JSON.stringify(quizArray);
+  quizJson.value = JSON.stringify(quizArray, null, 2);
 })
